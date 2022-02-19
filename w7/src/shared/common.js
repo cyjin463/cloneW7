@@ -1,8 +1,8 @@
-    // export const idCheck = (id) => {
-    //     let emailreg = /^[0-9a-zA-Z]([-_.0-9a-zA-Z])*@[0-9a-zA-Z]([-_.0-9a-zA-z])*.([a-zA-Z])*/;
+    export const idCheck = (id) => {
+        let emailreg = /^[0-9a-zA-Z]([-_.0-9a-zA-Z])*@[0-9a-zA-Z]([-_.0-9a-zA-z])*.([a-zA-Z])*/;
     
-    //     return emailreg.test(id);
-    // }
+        return emailreg.test(id);
+    }
     
     // 닉네임 형식
     export const usernameCheck = (user_name) => {

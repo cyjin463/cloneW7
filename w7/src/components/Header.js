@@ -16,11 +16,11 @@ const Header = (props) => {
 
 	const is_login = useSelector(state => state.user.isLogin);
 	const user = useSelector(state => state.user.userInfo)
-
-
-	if (is_login){
+	console.log(user)
+	
 		return (
 			<>
+			{is_login?
 				<Navbar style={{height:"5rem"}} bg="#252525">
 					<Container style={{height:"100%", display:"flex", WebkitBoxAlign:"center", alignItems:"center", WebkitBoxPack:"justify", justifyContent:"space-between"}}>
 						<Navbar.Brand style={{color:"#ececec"}} onClick={() => { history.push( '/' ) }} >
@@ -40,18 +40,19 @@ const Header = (props) => {
                                 <button style={{ height:"30px", padding:"0px 1rem 0px 1rem",borderRadius:"1rem", color:"darkGray", fontWeight:"bold", wordBreak:"keep-all", border:"1px solid #ececec", backgroundColor:"#232323", color:"#ececec", cursor:"pointer"}}>새 글 작성</button>
                                 </div>
                                 <div style={{margin:"auto"}}>
-                                <img style={{ margin:"0px 0px 0px 1rem", display:"block", width:"40px", height:"40px", borderRadius:"50%", objectFit:"cover"}} src="http://t3.gstatic.com/licensed-image?q=tbn:ANd9GcS_SMjGqJXvnd-5JpmTlvKMLpfPA 9be1tqsFe1rTRsVWkzRyVBBRLnMC-jfjTx4"/>
+                                <img style={{ margin:"0px 0px 0px 1rem", display:"block", width:"40px", height:"40px", borderRadius:"50%", objectFit:"cover"}} src={user.imgUrl}/>
                                 </div>
                             </div>
-							
+							<Nav.Link eventKey={2}href=""onClick={() => {
+									dispatch(userActions.logOut());
+									history.replace('/')
+									}}>
+								로그아웃
+							</Nav.Link>
 						</Navbar.Collapse>
 					</Container>
 				</Navbar>
-			</>
-		)
-	}
-	return (
-		<>
+		:
 			<Navbar collapseOnSelect expand="lg" bg="#252525"  >
 				<Container>
 					<Navbar.Brand style={{color:"#ececec"}} onClick={() => {history.push('/')}}>
@@ -70,18 +71,13 @@ const Header = (props) => {
 								href=""onClick={() => {history.push('/login')}}>
 								로그인
 							</Nav.Link>
-							<Nav.Link eventKey={2}href=""onClick={() => {
-									dispatch(userActions.logOut());
-									history.replace('/')
-									}}>
-								로그아웃
-							</Nav.Link>
 						</Nav>
 					</Navbar.Collapse>
 				</Container>
 			</Navbar>
+			}
 		</>
 	)
-}
+								}
 
 export default Header
