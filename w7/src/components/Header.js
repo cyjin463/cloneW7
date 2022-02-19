@@ -1,28 +1,24 @@
-import React, { useEffect } from 'react'
 
-import { useDispatch, useSelector } from 'react-redux'
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { actionCreators as userActions } from '../redux/modules/user'
 
 // import {logoutM} from "../redux/modules/user";
 
 import { history } from '../redux/configureStore'
-
+import { getCookie } from '../shared/Cookie';
 import { Nav, Navbar, Container } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import styled from 'styled-components'
-import Grid from '../elements/Geid'
-
-const Header = () => {
-	// const dispatch = useDispatch()
-	// const user = useSelector((state) => state.user)
-	// const is_login = useSelector((state) => state.user.is_login)
-	// console.log('Header', user, is_login)
-
-    const a = 1
 
 
-	if (a==1) {
-        //로그인시 보여줄 화면
+const Header = (props) => {
+	const dispatch = useDispatch();
+
+	const is_login = useSelector(state => state.user.isLogin);
+	const user = useSelector(state => state.user.userInfo)
+
+
+	if (is_login){
 		return (
 			<>
 				<Navbar style={{height:"5rem"}} bg="#252525">
@@ -54,7 +50,6 @@ const Header = () => {
 			</>
 		)
 	}
-        //로그인 안했을때 보여줄 화면
 	return (
 		<>
 			<Navbar collapseOnSelect expand="lg" bg="#252525"  >
@@ -75,6 +70,12 @@ const Header = () => {
 								href=""onClick={() => {history.push('/login')}}>
 								로그인
 							</Nav.Link>
+							<Nav.Link eventKey={2}href=""onClick={() => {
+									dispatch(userActions.logOut());
+									history.replace('/')
+									}}>
+								로그아웃
+							</Nav.Link>
 						</Nav>
 					</Navbar.Collapse>
 				</Container>
@@ -82,8 +83,5 @@ const Header = () => {
 		</>
 	)
 }
-
-
-
 
 export default Header

@@ -1,27 +1,33 @@
 import React from 'react';
 import Grid from '../elements/Geid';
-import { actionCreators as userActions } from "../redux/modules/user"
-import "bootstrap/dist/css/bootstrap.min.css"
+import { actionCreators as userActions } from '../redux/modules/user';
+import "bootstrap/dist/css/bootstrap.min.css";
 import { useDispatch } from 'react-redux';
-import { Container, Button, Form } from "react-bootstrap"
-import "bootstrap/dist/css/bootstrap.min.css"
-import { history } from '../redux/configureStore'
+import { Container, Button, Form } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { idCheck } from '../shared/common';
 
 
-const Login = () => {
-    const dispatch = useDispatch()
-    const [id, setId] = React.useState("")
-    const [password, setPassword] = React.useState("")
+    const Login = (props) => {
+        const {history} = props
+        const dispatch = useDispatch();
     
-    const login = e => {
-        e.preventDefault()
-        if (id === "" || password === "" ) {
-            window.alert("값이 대머리입니다.")
-            return
+        const [id, setId] = React.useState("");
+        const [password, setPassword] = React.useState("");
+    
+        const login = () => {
+        if(id === "" || password === "") {
+            window.alert("모두 입력해주세요!");
+            return;
         }
-        console.log(id,password, "의 로그인 요청을 dispatch 하였습니다.")
-        dispatch(userActions.loginM(id,password))
-    }
+    
+        // if(!idCheck(id)) {
+        //     window.alert("이메일 형식이 맞지 않습니다!");
+        //     return;
+        // }
+    
+        dispatch(userActions.loginM(id, password));
+        }
     return (
         <div style={{height:"800px"}}>
             <Grid is_flex width="800px" height="600px" bg="#121212" color="" margin="100px auto 0px auto">
