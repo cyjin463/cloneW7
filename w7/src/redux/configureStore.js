@@ -6,8 +6,8 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 // modules import
-import User from "./modules/user"
-import Post from "./modules/post"
+import user from "./modules/user"
+import post from "./modules/post"
 
 export const history = createBrowserHistory()
 
@@ -18,8 +18,8 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-	user: User,
-	post: Post,
+	user: user,
+	post: post,
 	router: connectRouter(history),
 })
 
