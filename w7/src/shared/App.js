@@ -6,24 +6,20 @@ import { ConnectedRouter } from "connected-react-router";
 
 import Header from "../components/Header";
 import Login from "../pages/Login";
-import PostList from "../components/PostList";
-import PostWrite from "../pages/PostWrite";
 import PostDetail from "../pages/PostDetail";
-import Signup from '../page/Signup';
-import Main from '../page/Main';
-import MainRecent from '../page/MainRecent';
-import PostAdd from '../page/PostAdd';
+import Signup from '../pages/Signup';
+import Main from '../pages/Main';
+import MainRecent from '../pages/MainRecent';
+import PostAdd from '../pages/PostAdd';
 
 function App() {
   return (
-    <div className="App" style={{backgroundColor:"#121212"}}>
+    <div className="App" style={{ backgroundColor: "#121212" }}>
       <Header />
       <ConnectedRouter history={history}>
-        <Route path="/" exact component={Login} />
+        <Route path="/login" exact component={Login} />
         <Route path="/user/signup" exact component={Signup} />
-        <Route path="/write" exact component={PostWrite} />
-        <Route path="/write/:id" exact component={PostWrite} />
-        <Route path="/post" exact component={PostDetail} />
+        <Route path="/post/:id" exact component={PostDetail} />
         <Route path="/" exact component={Main} />
         <Route path="/recent" exact component={MainRecent} />
         <Route path="/write" exact component={PostAdd} />
