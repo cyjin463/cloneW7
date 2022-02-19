@@ -5,12 +5,18 @@ import App from './shared/App';
 
 import { Provider } from "react-redux";
 import store from "./redux/configureStore";
+import { persistStore } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
+
+const persistor = persistStore(store);
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-     <App />
-    </Provider>
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+      </PersistGate>
+    </Provider>,
   </React.StrictMode>,
   document.getElementById('root')
 );
