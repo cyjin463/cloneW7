@@ -1,56 +1,109 @@
-// import axios from 'axios';
-// import { doc } from 'prettier';
-// import React from 'react';
-// import { createAction, handleActions } from 'redux-actions';
+import { createAction, handleActions } from "redux-actions";
+import produce from "immer";
+
+import apis from '../../common/api';
+
+// initialState
+const initialState = {
+    list: []
+};
 
 
-// //액션  타입 생성
-// const LOAD_POST = "LOAD_POST"
+// actions
+const GET_POST = "GET_POST";
 
 
-// //액션 생성
-// const loadPost = createAction(LOAD_POST, (post_list) => ({post_list}))
-
-// //초기값 셋팅
-// const initialState = {
-//     list: []
-// }
-
-// const loadPostM = () => async(dispatch, getState ) => {
-//     axios.get("http://localhost:3003/boards")
-//     .then ((res) => {
-//         console.log("확인")
-//         const post_data = res.data
-//         const post_list = []
-//         post_data.forEach((doc) => {
-//                 post_list.push({id: doc.id, ...doc,})
-//             }
-//         )
-//         dispatch(loadPost(post_list))
-//     })
-//     .catch((err) => {
-//         console.log(err)
-//     })
-// }
-
-// export default handleActions (
-//     {
-//         [LOAD_POST]: (
-//             state=initialState,
-//             action = {}
-//         ) =>{
-//             return {
-//                 ...state,
-//                 list:action.payload.post_list,
-//             }
-//         },
-//     },
-//     initialState
-// )
-
-// const actionCreators = {
-//     loadPostM
-// }
+// action creators
+const getPost = createAction(GET_POST, (post_list) => ({ post_list }));
 
 
-// export {actionCreators};
+//middleware actions
+const getDatePostDB = () => {
+    return async function (dispatch, getState, { history }) {
+        const token = localStorage.getItem('token');
+        await apis.get('/api/posting', {
+            headers: {
+                Authorization:
+                    `${token}`
+            }
+        }).then((response) => {
+            console.log((response.data))
+            dispatch(getPost(response.data))
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+}
+
+const getLikePostMonthDB = () => {
+    return async function (dispatch, getState, { history }) {
+        const token = localStorage.getItem('token');
+        await apis.get('/api/posting/likes/month', {
+            headers: {
+                Authorization:
+                    `${token}`
+            }
+        }).then((response) => {
+            console.log((response.data))
+            dispatch(getPost(response.data))
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+}
+
+const getLikePostWeekDB = () => {
+    return async function (dispatch, getState, { history }) {
+        const token = localStorage.getItem('token');
+        await apis.get('/api/posting/likes/week', {
+            headers: {
+                Authorization:
+                    `${token}`
+            }
+        }).then((response) => {
+            console.log((response.data))
+            dispatch(getPost(response.data))
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+}
+
+const getLikePostTodayDB = () => {
+    return async function (dispatch, getState, { history }) {
+        const token = localStorage.getItem('token');
+        await apis.get('/api/posting/likes/today', {
+            headers: {
+                Authorization:
+                    `${token}`
+            }
+        }).then((response) => {
+            console.log((response.data))
+            dispatch(getPost(response.data))
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+}
+
+
+// reducer
+export default handleActions(
+    {
+        [GET_POST]: (state, action) => produce(state, (draft) => {
+            draft.list = action.payload.post_list;
+        })
+    },
+    initialState
+);
+
+
+const actionCreators = {
+    getPost,
+    getDatePostDB,
+    getLikePostMonthDB,
+    getLikePostWeekDB,
+    getLikePostTodayDB,
+};
+
+export { actionCreators }

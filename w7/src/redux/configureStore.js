@@ -1,40 +1,51 @@
-	import { createStore, combineReducers, applyMiddleware, compose } from "redux";
-	import thunk from "redux-thunk";
-	import { createBrowserHistory } from "history";
-	import { connectRouter } from "connected-react-router";
+import { createStore, combineReducers, applyMiddleware, compose } from "redux"
+import thunk from "redux-thunk"
+import { createBrowserHistory } from "history"
+import { connectRouter } from "connected-react-router"
+import { persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
-	import post from "./modules/post"; 
-	import user from "./modules/user" 
+// modules import
+import user from "./modules/user"
+import post from "./modules/post"
 
+export const history = createBrowserHistory()
 
-	export const history = createBrowserHistory();
+const persistConfig = {
+	key: "root",
+	storage,
+	whitelist: ["post", "user"]
+};
 
-	const rootReducer = combineReducers({
-	post,
-	user,
+const rootReducer = combineReducers({
+	user: user,
+	post: post,
 	router: connectRouter(history),
-	});
+})
 
-	const middlewares = [thunk.withExtraArgument({history:history})];
+const perReducer = persistReducer(persistConfig, rootReducer);
 
-	// 지금이 어느 환경인 지 알려줌 (개발환경, 프로덕션(배포)환경 ...)
-	const env = process.env.NODE_ENV;
+// middleware
+const middlewares = [thunk.withExtraArgument({ history: history })]
 
-	// 개발환경에서는 로거
-	if (env === "development") {
-	const { logger } = require("redux-logger");
-	middlewares.push(logger);
-	}
+// redux-logger
+const env = process.env.NODE_ENV
+if (env === "development") {
+	const { logger } = require("redux-logger")
+	middlewares.push(logger)
+}
 
-	const composeEnhancers =
+// redux dev-tools
+const composeEnhancers =
 	typeof window === "object" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
 		? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
 			// Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
 		})
-		: compose;
+		: compose
 
-	const enhancer = composeEnhancers(applyMiddleware(...middlewares));
+const enhancer = composeEnhancers(applyMiddleware(...middlewares))
 
-	let store = (initialStore) => createStore(rootReducer, enhancer);
+// store
+let store = initialStore => createStore(perReducer, enhancer)
 
-	export default store();
+export default store()
