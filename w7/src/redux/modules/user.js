@@ -3,7 +3,7 @@ import { produce } from "immer";
 import apis from '../../common/api';
 import { setToken } from "../../shared/token";
 import { setCookie, deleteCookie } from "../../shared/Cookie";
-
+import axios from 'axios';
 
 // initialState
 const initialState = {
@@ -11,7 +11,7 @@ const initialState = {
     is_login: false,
     isCheckUsername: false,
     isCheckNickname: false,
-  userInfo: {
+    userInfo: {
         username: "",
         nickname: "",
     },
@@ -28,8 +28,8 @@ const USER_INFO = "USER_INFO"
 
 
 // action creators
-const setLogin = createAction(LOGIN, user => ({user}));
-const logOut = createAction(LOG_OUT, ()  => ({ }));
+const setLogin = createAction(LOGIN, user => ({ user }));
+const logOut = createAction(LOG_OUT, () => ({}));
 const setCheckUsername = createAction(CHECK_USERNAME, (isCheckUsername) => ({ isCheckUsername }));
 const setCheckNickname = createAction(CHECK_NICKNAME, (isCheckNickname) => ({ isCheckNickname }));
 
@@ -92,85 +92,85 @@ const signupDB = (username, nickname, password, ProfileImage) => {
 
 const loginCheckM = () => {
     const token = sessionStorage.getItem("token");
-    return function (dispatch, getState, {history}) {
+    return function (dispatch, getState, { history }) {
         axios.post("http://yuseon.shop/islogin", {}, {
-            headers: { 
-                "Authorization": `${token}`, 
+            headers: {
+                "Authorization": `${token}`,
             },
-            })
+        })
             .then((res) => {
-            dispatch(setLogin(
-                {
-                username: res.data.username,
-                nickname: res.data.nickname
-                })
-            );
+                dispatch(setLogin(
+                    {
+                        username: res.data.username,
+                        nickname: res.data.nickname
+                    })
+                );
             })
             .catch((err) => {
-            console.log("로그인 확인 실패", err)
+                console.log("로그인 확인 실패", err)
             })
-        }
-        }
+    }
+}
 
 const loginM = (username, password) => {
     return function (dispatch, getState, { history }) {
-    axios
-    /* .post('http://yuseon.shop/user/login',{ */
-    .post('http://yuseon.shop/user/login',{
-        username: username,
-        password: password,
-    })
-    .then((res) => {
-        const token_res = res.headers.authorization;
-        setToken(token_res);
-
-        return token_res
-    })
-    .then((token_res) =>{
-        axios({ 
-        method: "post", 
-        url: "http://yuseon.shop/islogin", 
-        headers: { 
-            /* "content-type": "applicaton/json;charset=UTF-8", 
-            "accept": "application/json",  */
-            "Authorization": `${token_res}`, 
-        }, 
-        })
-        .then((res) => {
-        dispatch(setLogin(
-            {
-            username: res.data.username,
-            nickname: res.data.nickname
+        axios
+            /* .post('http://yuseon.shop/user/login',{ */
+            .post('http://yuseon.shop/user/login', {
+                username: username,
+                password: password,
             })
-        );
-        })
-        .catch((err) => {
-        console.log("로그인 확인 실패", err)
-        })
-        history.replace('/')
-    })
-    .catch((err) => {
-        window.alert("이메일이나 패스워드를 다시 확인해주세요!")
-    })
+            .then((res) => {
+                const token_res = res.headers.authorization;
+                setToken(token_res);
+
+                return token_res
+            })
+            .then((token_res) => {
+                axios({
+                    method: "post",
+                    url: "http://yuseon.shop/islogin",
+                    headers: {
+                        /* "content-type": "applicaton/json;charset=UTF-8", 
+                        "accept": "application/json",  */
+                        "Authorization": `${token_res}`,
+                    },
+                })
+                    .then((res) => {
+                        dispatch(setLogin(
+                            {
+                                username: res.data.username,
+                                nickname: res.data.nickname
+                            })
+                        );
+                    })
+                    .catch((err) => {
+                        console.log("로그인 확인 실패", err)
+                    })
+                history.replace('/')
+            })
+            .catch((err) => {
+                window.alert("이메일이나 패스워드를 다시 확인해주세요!")
+            })
     };
 };
 
 export const logoutM = () =>
-async (dispatch, getState, { history }) => {
-  axios.get("http://yuseon.shop/user/logout")
-    .then(res => {
-      // deleteCookie = (name)
-      deleteCookie("token")
-      localStorage.removeItem("username")
-      localStorage.removeItem("token")
-      dispatch(logOut())
-      history.replace("/")
-      window.location.reload()
-    })
-    .catch(err => {
-      console.log(err)
-    })
-}
+    async (dispatch, getState, { history }) => {
+        axios.get("http://yuseon.shop/user/logout")
+            .then(res => {
+                // deleteCookie = (name)
+                deleteCookie("token")
+                localStorage.removeItem("username")
+                localStorage.removeItem("token")
+                dispatch(logOut())
+                history.replace("/")
+                window.location.reload()
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
 
 
 // reducer
@@ -187,11 +187,11 @@ export default handleActions(
             window.alert("해당 닉네임은 사용 가능합니다.")
         }),
         [LOGIN]: (state, action) => {
-                  // console.log("setUser 리듀서로 도착했습니다", state, action.payload);
-                  state.user = action.payload.user
-                  state.is_login = true
-                  console.log("setUser 리듀서로 적용 완료", state, action.payload, state.user)
-              },
+            // console.log("setUser 리듀서로 도착했습니다", state, action.payload);
+            state.user = action.payload.user
+            state.is_login = true
+            console.log("setUser 리듀서로 적용 완료", state, action.payload, state.user)
+        },
         [LOG_OUT]: (state, action) => {
             console.log("logOut 리듀서로 도착했습니다", state, action.payload)
             state.user = null
@@ -211,15 +211,15 @@ export default handleActions(
 
 
 const actionCreators = {
-	loginM,
-	logoutM,
-	loginCheckM,
-  setCheckUsername,
-  setCheckNickname,
-  signupDB,
-  checkUsernameDB,
-  checkNicknameDB,
+    loginM,
+    logoutM,
+    loginCheckM,
+    setCheckUsername,
+    setCheckNickname,
+    signupDB,
+    checkUsernameDB,
+    checkNicknameDB,
 }
 
 
-export {actionCreators};
+export { actionCreators };
