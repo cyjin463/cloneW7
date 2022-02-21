@@ -14,6 +14,7 @@ const initialState = {
     userInfo: {
         username: "",
         nickname: "",
+        imgUrl: "",
     },
     isLogin: false,
 };
@@ -66,19 +67,15 @@ const checkNicknameDB = (nickname, isCheckNickname) => {
 const signupDB = (username, nickname, password, ProfileImage) => {
     return async function (dispatch, getState, { history }) {
         console.log(username, nickname, password)
-        // const form = new FormData();
-        // form.append('username', username);
-        // form.append('nickname', nickname);
-        // form.append('password', password);
-        // form.append('ProfileImage', ProfileImage ? ProfileImage : null)
+        const form = new FormData();
+        form.append('username', username);
+        form.append('nickname', nickname);
+        form.append('password', password);
+        form.append('profileImage', ProfileImage ? ProfileImage : null)
         // ProfileImage: ProfileImage ? ProfileImage : null,
 
         await apis
-            .post("/user/signup", {
-                "username": username,
-                "nickname": nickname,
-                "password": password,
-            })
+            .post("/user/signup", form)
             .then(function (response) {
                 console.log(response)
                 history.push("/login");
@@ -92,85 +89,70 @@ const signupDB = (username, nickname, password, ProfileImage) => {
 
 const loginCheckM = () => {
     const token = sessionStorage.getItem("token");
-    return function (dispatch, getState, { history }) {
+    return function (dispatch, getState, {history}) {
         axios.post("http://yuseon.shop/islogin", {}, {
-            headers: {
-                "Authorization": `${token}`,
+            headers: { 
+                "Authorization": `${token}`, 
             },
-        })
+            })
             .then((res) => {
-                dispatch(setLogin(
-                    {
-                        username: res.data.username,
-                        nickname: res.data.nickname
-                    })
-                );
+                console.log("로그인체크")
+            dispatch(setLogin(
+                {
+                username: res.data.username,
+                nickname: res.data.nickname
+                })
+            );
             })
             .catch((err) => {
-                console.log("로그인 확인 실패", err)
+            console.log("로그인 확인 실패", err)
             })
-    }
-}
+        }
+        }
 
 const loginM = (username, password) => {
     return function (dispatch, getState, { history }) {
-        axios
-            /* .post('http://yuseon.shop/user/login',{ */
-            .post('http://yuseon.shop/user/login', {
-                username: username,
-                password: password,
+    axios
+    /* .post('http://yuseon.shop/user/login',{ */
+    .post('http://yuseon.shop/user/login',{
+        username: username,
+        password: password,
+    })
+    .then((res) => {
+        const token_res = res.headers.authorization;
+        setToken(token_res);
+        return token_res
+    })
+    .then((token_res) =>{
+        axios({
+        method: "post",
+        url: "http://yuseon.shop/islogin",
+        headers: {
+            /* "content-type": "applicaton/json;charset=UTF-8",
+            "accept": "application/json",  */
+            "Authorization": `${token_res}`,
+        },
+        })
+        .then((res) => {
+            console.log(res,"토큰주고 정보받기")
+        dispatch(setLogin(
+            {
+            imgUrl: res.data.imgUrl,
+            username: res.data.username,
+            nickname: res.data.nickname,
             })
-            .then((res) => {
-                const token_res = res.headers.authorization;
-                setToken(token_res);
-
-                return token_res
-            })
-            .then((token_res) => {
-                axios({
-                    method: "post",
-                    url: "http://yuseon.shop/islogin",
-                    headers: {
-                        /* "content-type": "applicaton/json;charset=UTF-8", 
-                        "accept": "application/json",  */
-                        "Authorization": `${token_res}`,
-                    },
-                })
-                    .then((res) => {
-                        dispatch(setLogin(
-                            {
-                                username: res.data.username,
-                                nickname: res.data.nickname
-                            })
-                        );
-                    })
-                    .catch((err) => {
-                        console.log("로그인 확인 실패", err)
-                    })
-                history.replace('/')
-            })
-            .catch((err) => {
-                window.alert("이메일이나 패스워드를 다시 확인해주세요!")
-            })
+        );
+        })
+        .catch((err) => {
+        console.log("로그인 확인 실패", err)
+        })
+        history.replace('/')
+    })
+    .catch((err) => {
+        window.alert("이메일이나 패스워드를 다시 확인해주세요!")
+    })
     };
 };
-
-export const logoutM = () =>
-    async (dispatch, getState, { history }) => {
-        axios.get("http://yuseon.shop/user/logout")
-            .then(res => {
-                // deleteCookie = (name)
-                deleteCookie("token")
-                localStorage.removeItem("username")
-                localStorage.removeItem("token")
-                dispatch(logOut())
-                history.replace("/")
-                window.location.reload()
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    }
 
 
 // reducer
@@ -186,18 +168,22 @@ export default handleActions(
             draft.isCheckNickname = action.payload.isCheckNickname;
             window.alert("해당 닉네임은 사용 가능합니다.")
         }),
-        [LOGIN]: (state, action) => {
-            // console.log("setUser 리듀서로 도착했습니다", state, action.payload);
-            state.user = action.payload.user
-            state.is_login = true
-            console.log("setUser 리듀서로 적용 완료", state, action.payload, state.user)
-        },
-        [LOG_OUT]: (state, action) => {
-            console.log("logOut 리듀서로 도착했습니다", state, action.payload)
-            state.user = null
-            state.is_login = false
-            return state
-        },
+        [LOGIN]: (state, action) =>
+            produce(state, (draft) => {
+            setCookie("is_login", "success");
+            draft.userInfo = action.payload.user;
+            draft.isLogin = true;
+        }),
+        [LOG_OUT]: (state, action) =>
+            produce(state, (draft) => {
+            sessionStorage.removeItem("token");
+            deleteCookie("is_login");
+            draft.userInfo = {
+            username: "",
+            nickname: "",
+            };
+            draft.isLogin = false;
+        }),
 
         [USER_INFO]: (state, action) => {
             console.log("setUserInfo 리듀서로 도착했습니다", state, action.payload)
@@ -212,7 +198,7 @@ export default handleActions(
 
 const actionCreators = {
     loginM,
-    logoutM,
+    logOut,
     loginCheckM,
     setCheckUsername,
     setCheckNickname,

@@ -11,10 +11,14 @@ const initialState = {
 
 // actions
 const GET_POST = "GET_POST";
+const ADD_POST = "ADD_POST";
+
 
 
 // action creators
 const getPost = createAction(GET_POST, (post_list) => ({ post_list }));
+const addPost = createAction(ADD_POST, (post_list) => ({ post_list }));
+
 
 
 //middleware actions
@@ -86,13 +90,30 @@ const getLikePostTodayDB = () => {
     }
 }
 
+const addPostDB = () => {
+    return async function (dispatch, getState, { history }) {
+        const token = localStorage.getItem('token');
+        const form = new FormData();
+        // form.append()
+
+        await apis.post("/posting", form, {
+            headers: {
+                "X-AUTH-TOKEN": `Bearer ${token}`
+            }
+        })
+    }
+}
+
 
 // reducer
 export default handleActions(
     {
         [GET_POST]: (state, action) => produce(state, (draft) => {
             draft.list = action.payload.post_list;
-        })
+        }),
+        [ADD_POST]: (state, action) => produce(state, (draft) => {
+            console.log(state);
+        }),
     },
     initialState
 );
@@ -104,6 +125,8 @@ const actionCreators = {
     getLikePostMonthDB,
     getLikePostWeekDB,
     getLikePostTodayDB,
+    addPost,
+    addPostDB,
 };
 
 export { actionCreators }

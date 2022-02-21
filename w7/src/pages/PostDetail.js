@@ -10,7 +10,7 @@ const PostDetail = (props) => {
     const dispatch = useDispatch()
 
     React.useEffect(async () => {
-		dispatch(postActions.loadPostM())}, [])
+		dispatch(postActions.getDatePostDB())}, [])
 
     
     const post_list = useSelector(state => state.post.list)

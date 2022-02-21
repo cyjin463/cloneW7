@@ -15,13 +15,13 @@ const Header = (props) => {
 	const dispatch = useDispatch();
 
 	const is_login = useSelector(state => state.user.isLogin);
-	const user = useSelector(state => state.user.userInfo)
+	const user = useSelector(state => state.user.userInfo);
 	console.log(user)
 	
 		return (
 			<>
 			{is_login?
-				<Navbar style={{height:"5rem"}} bg="#252525">
+				<Navbar style={{height:"5rem", minWidth:"520px"}} bg="#252525">
 					<Container style={{height:"100%", display:"flex", WebkitBoxAlign:"center", alignItems:"center", WebkitBoxPack:"justify", justifyContent:"space-between"}}>
 						<Navbar.Brand style={{color:"#ececec"}} onClick={() => { history.push( '/' ) }} >
                         Veloog 로고자리
@@ -37,7 +37,7 @@ const Header = (props) => {
                                 <svg width="25" height="25" viewBox="0 0 17 17"><path fill-rule="evenodd" d="M13.66 7.36a6.3 6.3 0 1 1-12.598 0 6.3 6.3 0 0 1 12.598 0zm-1.73 5.772a7.36 7.36 0 1 1 1.201-1.201l3.636 3.635c.31.31.31.815 0 1.126l-.075.075a.796.796 0 0 1-1.126 0l-3.636-3.635z" clip-rule="evenodd" fill="currentColor"></path></svg>
                                 </div>
                                 <div style={{margin:"auto"}}>
-                                <button style={{ height:"30px", padding:"0px 1rem 0px 1rem",borderRadius:"1rem", color:"darkGray", fontWeight:"bold", wordBreak:"keep-all", border:"1px solid #ececec", backgroundColor:"#232323", color:"#ececec", cursor:"pointer"}}>새 글 작성</button>
+                                <button onClick={() => {history.push('/write')}} style={{ height:"30px", padding:"0px 1rem 0px 1rem",borderRadius:"1rem", color:"darkGray", fontWeight:"bold", wordBreak:"keep-all", border:"1px solid #ececec", backgroundColor:"#232323", color:"#ececec", cursor:"pointer"}}>새 글 작성</button>
                                 </div>
                                 <div style={{margin:"auto"}}>
                                 <img style={{ margin:"0px 0px 0px 1rem", display:"block", width:"40px", height:"40px", borderRadius:"50%", objectFit:"cover"}} src={user.imgUrl}/>
