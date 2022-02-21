@@ -12,7 +12,7 @@ function MainRecent(props) {
     const dispatch = useDispatch();
 
     React.useEffect(() => {
-        // dispatch(postActions.getDatePostDB());
+        dispatch(postActions.getDatePostDB());
     }, [])
 
 
