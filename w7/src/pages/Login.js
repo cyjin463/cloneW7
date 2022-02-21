@@ -21,10 +21,10 @@ import { idCheck } from '../shared/common';
             return;
         }
     
-        // if(!idCheck(id)) {
-        //     window.alert("이메일 형식이 맞지 않습니다!");
-        //     return;
-        // }
+        if(!idCheck(id)) {
+            window.alert("이메일 형식이 맞지 않습니다!");
+            return;
+        }
     
         dispatch(userActions.loginM(id, password));
         }
@@ -45,7 +45,6 @@ import { idCheck } from '../shared/common';
                                 <Form.Control type="password" placeholder="Password 입력" onChange={e => {setPassword(e.target.value)}} />
                             </Form.Group>
                         <Button style={{backgroundColor:"#96f2d7", color:"#121212"}} variant="primary" onClick={login}>Primary</Button>{' '}
-                        <button onClick={() => {history.push('/post')}}>버어튼</button>
                         </Form>
                     </Grid>
             </Grid>
