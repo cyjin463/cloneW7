@@ -8,18 +8,20 @@ import storage from "redux-persist/lib/storage";
 // modules import
 import user from "./modules/user"
 import post from "./modules/post"
+import comment from './modules/comment';
 
 export const history = createBrowserHistory()
 
 const persistConfig = {
 	key: "root",
 	storage,
-	whitelist: ["post", "user"]
+	whitelist: ["post", "user", "comment"]
 };
 
 const rootReducer = combineReducers({
 	user: user,
 	post: post,
+	comment: comment,
 	router: connectRouter(history),
 })
 
