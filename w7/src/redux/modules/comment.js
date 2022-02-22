@@ -10,10 +10,10 @@ const DELETE_COMMENT = "DELETE_COMMENT";
 const EDIT_COMMENT = "EDIT_COMMENT";
 
 // action creators
-const getComment = createAction(GET_COMMENT, (postId, comment_list) => ({ postId, comment_list }));
-const addComment = createAction(ADD_COMMENT, (postId, comment, nickname, date, is_me) => ({ postId, comment, nickname, date, is_me }));
-const deleteComment = createAction(DELETE_COMMENT, (postId, commentId) => ({ postId, commentId }))
-const editComment = createAction(EDIT_COMMENT, (postId, commentId, newComment) => ({ postId, commentId, newComment }))
+const getComment = createAction(GET_COMMENT, (comment_list) => ({ comment_list }));
+const addComment = createAction(ADD_COMMENT, (nickname, comment, postId, profileImage, is_me) => ({ nickname, comment, postId, profileImage, is_me }));
+const deleteComment = createAction(DELETE_COMMENT, (commentId) => ({ commentId }))
+const editComment = createAction(EDIT_COMMENT, (commentId, newComment) => ({ commentId, newComment }))
 
 //initialState
 const initialState = {
@@ -36,14 +36,14 @@ const getCommentDB = (postId) => {
     }
 }
 
-const addCommentDB = (nickname, comment, postId) => {
-    return async function (dispatch, getState) {
+const addCommentDB = (nickname, comment, postId, profileImage) => {
+    return async function (dispatch, getState, { history }) {
         const token = sessionStorage.getItem('token');
 
         await apis.post(`/api/comment`, {
             "nickname": nickname,
             "comment": comment,
-            "postId": postId
+            "postingId": postId
         },
             {
                 headers: {
@@ -52,9 +52,8 @@ const addCommentDB = (nickname, comment, postId) => {
             }
         ).then(function (response) {
             console.log(response)
-            // const res = response.data.data;
-            // let is_me = true;
-            // dispatch(addComment(postId, res.comment, res.nickname, res.date, is_me))
+            let is_me = true;
+            dispatch(addComment(nickname, comment, postId, profileImage, is_me))
         }).catch((err) => {
             console.log("댓글 추가하기 실패", postId, err);
         })
@@ -63,33 +62,36 @@ const addCommentDB = (nickname, comment, postId) => {
 
 const deleteCommentDB = (postId, commentId) => {
     return async function (dispatch, getState) {
-        const token = localStorage.getItem('token');
-        await apis.delete(`/api/comment/delete/${commentId}`,
+        const token = sessionStorage.getItem('token');
+        await apis.delete(`/api/comment/${commentId}`,
             {
                 headers: {
-                    Authorization:
-                        `Bearer ${token}`
+                    "Authorization": `${token}`
                 }
             }
         ).then(function (response) {
-            dispatch(deleteComment(postId, commentId))
+            dispatch(deleteComment(commentId))
         }).catch((err) => {
             console.log("댓글 삭제가 실패했습니다.", err)
         })
     }
 }
-const editCommentDB = (postId, commentId, newComment) => {
+const editCommentDB = (nickname, newComment, commentId) => {
     return async function (dispatch, getState) {
-        const token = localStorage.getItem('token');
-        await apis.put(`/api/comment/update/${commentId}`, { 'comment': newComment },
+        const token = sessionStorage.getItem('token');
+        await apis.put(`/api/comment/${commentId}`, {
+            "nickname": nickname,
+            "comment": newComment,
+            "commentId": commentId,
+        },
             {
                 headers: {
-                    Authorization:
-                        `Bearer ${token}`
+                    "Authorization": `${token}`
                 }
             }
         ).then(function (response) {
-            dispatch(editComment(postId, commentId, newComment));
+            console.log(response)
+            dispatch(editComment(commentId, newComment))
         }).catch((err) => {
             console.log("댓글 수정에 실패했습니다.", err)
         })
@@ -99,20 +101,21 @@ const editCommentDB = (postId, commentId, newComment) => {
 //reducer
 export default handleActions({
     [GET_COMMENT]: (state, action) => produce(state, (draft) => {
-        draft.list[action.payload.postId] = action.payload.comment_list;
+        draft.list = action.payload.comment_list;
+        console.log(draft.list)
     }),
 
     [ADD_COMMENT]: (state, action) => produce(state, (draft) => {
-        draft.list[action.payload.postId].unshift(action.payload);
+        draft.list.push(action.payload);
     }),
 
     [DELETE_COMMENT]: (state, action) => produce(state, (draft) => {
-        const filter_comment = draft.list[action.payload.postId].filter((c) => c.commentId !== action.payload.commentId)
-        draft.list[action.payload.postId] = filter_comment;
+        const filter_comment = draft.list.filter((c) => c.commentId !== action.payload.commentId)
+        draft.list = filter_comment;
     }),
 
     [EDIT_COMMENT]: (state, action) => produce(state, (draft) => {
-        const newComments = draft.list[action.payload.postId].find((c) => c.commentId === action.payload.commentId)
+        const newComments = draft.list.find((c) => c.commentId === action.payload.commentId)
         newComments.comment = action.payload.newComment;
     })
 },
