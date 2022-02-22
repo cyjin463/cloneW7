@@ -11,6 +11,7 @@ import Signup from '../pages/Signup';
 import Main from '../pages/Main';
 import MainRecent from '../pages/MainRecent';
 import PostAdd from '../pages/PostAdd';
+import Mypage from "../pages/Mypage";
 
 function App() {
   return (
@@ -23,6 +24,8 @@ function App() {
         <Route path="/" exact component={Main} />
         <Route path="/recent" exact component={MainRecent} />
         <Route path="/write" exact component={PostAdd} />
+        <Route path="/write/:id" exact component={PostAdd} />
+        <Route path="/:nickname" exact component={Mypage} />
       </ConnectedRouter>
     </div>
   );
