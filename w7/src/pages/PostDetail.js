@@ -5,6 +5,7 @@ import { history } from '../redux/configureStore'
 import { Container, Button } from "react-bootstrap"
 import { useDispatch, useSelector } from 'react-redux';
 import { actionCreators as postActions } from "../redux/modules/post"
+import { actionCreators as commentActions } from '../redux/modules/comment';
 import ReactMarkdown from 'react-markdown';
 import CommentList from '../components/CommentList';
 import CommentWrite from '../components/CommentWrite';
@@ -13,21 +14,22 @@ const PostDetail = (props) => {
 
     const dispatch = useDispatch()
 
-    console.log(props)
+    // console.log(props)
 
     const post_list = useSelector(state => state.post.list2)
     console.log('post_list', post_list)
 
     const user_info = useSelector(state => state.user.userInfo)
-    console.log('user_info', user_info)
+    const comment_list = useSelector(state => state.comment.list)
 
     const post_id = props.match.params.id
-    console.log(post_id)
+    // console.log(post_id)
 
-    React.useEffect(async () => {
+    React.useEffect(() => {
+        console.log("ehlsk")
         dispatch(postActions.detailPostDB(post_id))
-    }, [])
-
+        dispatch(commentActions.getComment(comment_list))
+    }, []);
 
 
     return (
@@ -77,7 +79,7 @@ const PostDetail = (props) => {
                             </div>
                         </div>
                         <div style={{ width: "100%", marginTop: "15px" }}>
-                            {post_list.tags.map((t, idx) => {
+                            {/* {post_list.tags.map((t, idx) => {
                                 console.log(t)
                                 return (
                                     <a
@@ -94,7 +96,7 @@ const PostDetail = (props) => {
                                         {t}
                                     </a>
                                 )
-                            })}
+                            })} */}
                         </div>
                         <div>
                             <img src={post_list.thumnail} />
@@ -129,23 +131,36 @@ const PostDetail = (props) => {
                     fontWeight: "600",
                     marginBottom: "1rem"
                 }}>
-                    개의 댓글
+                    {post_list.commentCnt}개의 댓글
                 </h4>
                 <div style={{ color: "#ECECEC" }}>
                     <CommentWrite postId={post_id} />
-                    <CommentList postId={post_id} />
+                    <CommentList postId={post_id} comment_list={comment_list} />
                 </div>
             </CommentContainer>
+            <div style={{
+                zIndex: "30",
+                position: "relative",
+                paddingTop: "4rem",
+                paddingBottom: "4rem",
+                marginTop: "4rem",
+                background: "#121212",
+                boxShadow: "rgb(0 0 0 / 8%) 0px 0px 32px",
+            }}></div>
         </>
     );
 };
 
 const CommentContainer = styled.div`
     margin-top: 3rem;
-    width: 80%;
+    width: 768px;
     color: #ECECEC;
     margin-right: auto;
     margin-left: auto;
+
+    @media screen and (max-width: 768px) {
+        width: 100%;
+    }
 `
 
 export default PostDetail;
