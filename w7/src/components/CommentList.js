@@ -16,7 +16,7 @@ function CommentList(props) {
 
     const comment_list = [
         {
-            content: "냠냠asdfadsfasdfasdfsdfadsfasdfasdsdfadsfasdfasdsdfadsfasdfasdsdfadsfasdfasdsdfadsfasdfasdsdfadsfasdfasd",
+            content: "냠냠asdfadsfasdfasdfsdfadsfasdfasdsdfadsfasdfasdsdfadsfasdfasdsdfadsfasdfasdsdfadsfasdfasadsfasdfasd",
             date: "2일 전",
             nickname: nickname,
             profileImage: "https://mblogthumb-phinf.pstatic.net/20141204_276/firstgjp_14176838057819gNtv_JPEG/___.jpg?type=w2",
