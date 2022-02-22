@@ -4,46 +4,46 @@ import { history } from '../redux/configureStore'
 import {Container, Button } from "react-bootstrap"
 import { useDispatch, useSelector } from 'react-redux';
 import { actionCreators as postActions } from "../redux/modules/post"
+import ReactMarkdown from 'react-markdown';
 
 const PostDetail = (props) => {
 
     const dispatch = useDispatch()
 
-    React.useEffect(async () => {
-		dispatch(postActions.getDatePostDB())}, [])
+    console.log(props)
 
-    
-    const post_list = useSelector(state => state.post.list)
+    const post_list = useSelector(state => state.post.list2)
     console.log('post_list', post_list)
 
-    const user_info = useSelector(state => state.user.user)
+    const user_info = useSelector(state => state.user.userInfo)
 	console.log('user_info', user_info)
 
-	const post_id = props.match.params.postingId
+	const post_id = props.match.params.id
     console.log(post_id)
+    
+    React.useEffect(async () => {
+		dispatch(postActions.detailPostDB(post_id))}, [])
 
-	const post_find = post_list.find(p => p.postingId == post_id)
-	console.log('post_find', post_find)
 
     return (
         <Grid>
-            <Grid width="760px" height="740px">
+            <Grid width="760px" height="100%">
                 <div style={{width:"770", height:"370", marginTop:"3rem" }}>
                     <div style={{width:"760", height:"70", marginBottom:"32px"}}>
-                    <h1 style={{lineHeight:"1.5", fontWeight:"800", fontSize:"3rem", color:"#ececec"}}>여기는 제목 입니다.</h1>
+                    <h1 style={{lineHeight:"1.5", fontWeight:"800", fontSize:"3rem", color:"#ececec"}}>{post_list.title}</h1>
                     </div>
                     <div style={{display:"flex", justifyContent: "space-between"}}>
                         <div style={{fontSize:"1rem", color:"#ececec"}}>
-                            <span style={{fontWeight:"400"}}><a>name</a></span>
+                            <span style={{fontWeight:"400"}}><a>{post_list.nickname}</a></span>
                             <span> . </span>
-                            <span> 현재시간 - 받은값 계산</span>
+                            <span>{post_list.dayBefore},{post_list.comentCnt}</span>
                         </div>
                         <div
                         style={{width:"73px",
                         height:"24px",
                         display:"flex",
                         alignItems:"center",
-                        webkitBoxAlign:"center",
+                        WebkitBoxAlign:"center",
                         boxSizing:"inherit",
                         fontSize:"1rem",
                         color:"#d9d9d9",
@@ -65,31 +65,51 @@ const PostDetail = (props) => {
                                 <svg width="0.75rem" height="0.75rem" viewBox="0 0 24 24" style={{ marginRight:"0.75rem", fontFamily:"inherit"}}>
                                     <path fill="currentColor" d="M18 1l-6 4-6-4-6 5v7l12 10 12-10v-7z"></path>
                                 </svg>
-                                <span>104</span>
+                                <span>{post_list.like}</span>
                             </button>
                         </div>
                     </div>
                     <div style={{width:"100%", marginTop:"15px"}}>
-                    {/* 태그는 맵돌리기 */}
-                    <a style={{
-                        backgroundColor:"#252525",
-                        color:"#96f2d7",
-                        borderRadius:"5rem",
-                        padding:"5px",
-                        fontWeight:"400",
-                        marginRight:"0.8rem",
-                        }}
-                        variant="primary">
-                        태그1
-                        </a>
+                    {post_list.tags.map((t, idx) => {
+                        console.log(t)
+                        return (
+                            <a 
+                                key={idx}
+                                style={{
+                                backgroundColor:"#252525",
+                                color:"#96f2d7",
+                                borderRadius:"5rem",
+                                padding:"5px",
+                                fontWeight:"400",
+                                marginRight:"0.8rem",
+                                }}
+                                variant="primary">
+                                {t}
+                                </a>
+                        )
+                    })}
                     </div>
-                    <Grid width="768px" height="167px" bg="#1E1E1E" margin="32px 0px 0px" padding="32px 24px">
-
-                    </Grid>
+                    <div>
+                        <img src={post_list.thumnail}  />
+                    </div>
                 </div>
-            </Grid>
-            <Grid>
-            <button onClick={() => {history.push('/')}}>버어튼</button>
+
+                <div style={{color:"#ECECEC", fontSize:"1.125rem", lineHeight:"1.7", letterSpacing:"-0.004em", overflowWrap:"break-word",
+                    workBreack:"keep-all"}}>
+                        <ReactMarkdown>
+                        {post_list.content}
+                        </ReactMarkdown>
+                </div>
+                <div style={{ display:"flex", WebkitBoxAlign:"center", alignItems:"center"}}>
+                    <div  style={{ color:"WenkitLink", cursor:"pointer", textDecoration:"underline"}}>
+                        <img  src={post_list.profileImage}
+                        style={{display:"block", width:"8rem", height:"8rem", borderRadius:"505", objectFit:"cover",boxShadow: "rgb(0 0 0 / 6%) 0px 0px 4px 0px"
+                    }}/>
+                    </div>
+                    <div style={{display:"flex", flexDirection: "column", WebkitBoxPack: "center", justifyContent: "center",marginLeft: "1rem"}}>
+                        
+                    </div>
+                </div>
             </Grid>
         </Grid>
     );
