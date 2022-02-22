@@ -27,7 +27,7 @@ const getDatePostDB = () => {
     return async function (dispatch, getState, { history }) {
         await axios.get('http://yuseon.shop/api/posting')
             .then((response) => {
-                console.log("response", response.data.articles)
+                console.log("response1", response.data.articles)
                 dispatch(getPost(response.data.articles))
             }).catch((err) => {
                 console.log(err)
@@ -38,8 +38,8 @@ const getDatePostDB = () => {
 const getLikePostMonthDB = () => {
     return async function (dispatch, getState, { history }) {
         await apis.get('http://yuseon.shop/api/posting/likes/month',).then((response) => {
-            console.log((response.data))
-            dispatch(getPost(response.data))
+            console.log((response.data.articles))
+            dispatch(getPost(response.data.articles))
         }).catch((err) => {
             console.log(err)
         })
@@ -49,8 +49,8 @@ const getLikePostMonthDB = () => {
 const getLikePostWeekDB = () => {
     return async function (dispatch, getState, { history }) {
         await apis.get('http://yuseon.shop/api/posting/likes/week').then((response) => {
-            console.log((response.data))
-            dispatch(getPost(response.data))
+            console.log((response.data.articles))
+            dispatch(getPost(response.data.articles))
         }).catch((err) => {
             console.log(err)
         })
@@ -60,24 +60,32 @@ const getLikePostWeekDB = () => {
 const getLikePostTodayDB = () => {
     return async function (dispatch, getState, { history }) {
         await apis.get('http://yuseon.shop/api/posting/today').then((response) => {
-            console.log((response.data))
-            dispatch(getPost(response.data))
+            console.log((response.data.articles))
+            dispatch(getPost(response.data.articles))
         }).catch((err) => {
             console.log(err)
         })
     }
 }
 
-const addPostDB = () => {
+const addPostDB = (title, contents, previewUrlList, nickname, hashArr) => {
     return async function (dispatch, getState, { history }) {
         const token = sessionStorage.getItem('token');
-        const form = new FormData();
-        // form.append()
 
-        await apis.post("/posting", form, {
+        await apis.post("/api/posting", {
+            'title': title,
+            'content': contents,
+            'imageFiles': previewUrlList,
+            'nickname': nickname,
+            'tag': hashArr,
+        }, {
             headers: {
-                "X-AUTH-TOKEN": `Bearer ${token}`
+                "Authorization": `${token}`
             }
+        }).then((res) => {
+            console.log(res)
+            dispatch(addPost(res.data))
+            history.push('/')
         })
     }
 }
@@ -90,7 +98,7 @@ export default handleActions(
             draft.list = action.payload.post_list;
         }),
         [ADD_POST]: (state, action) => produce(state, (draft) => {
-            console.log(state);
+            draft.list.push(action.payload.post)
         }),
     },
     initialState

@@ -7,13 +7,14 @@ function Post(props) {
     const {
         postingId,
         title,
+        thumnail,
         content,
         dayBefore,
         commentCnt,
         nickname,
+        profileImage,
+        tag,
         like,
-        imageFile,
-        userImage,
     } = props;
 
     return (
@@ -22,7 +23,7 @@ function Post(props) {
                 <a href="#" alt="">
                     <PostImageStyled>
                         <img
-                            src={imageFile}
+                            src={thumnail}
                             alt="썸네일" />
                     </PostImageStyled>
                 </a>
@@ -53,7 +54,7 @@ function Post(props) {
                 <PostUserBoxStyled style={{ textDecoration: "none" }}>
                     <a href="#">
                         <img
-                            src={userImage}
+                            src={profileImage}
                             alt=""
                             style={{
                                 objectFit: "cover",

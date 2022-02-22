@@ -67,7 +67,7 @@ function SignUp(props) {
             return;
         }
 
-        const file = fileInput.current.files[0];
+        const file = fileInput.current.files[0] ? fileInput.current.files[0] : "";
         console.log(username, nickname, password, "의 회원가입 요청을 dispatch 했습니다.");
         dispatch(userActions.signupDB(username, nickname, password, file));
         setIsCheckUsername(false);
