@@ -84,7 +84,6 @@ const addPostDB = (title, contents, previewUrlList, nickname, hashArr) => {
             }
         }).then((res) => {
             console.log(res)
-            dispatch(addPost(res.data))
             history.push('/')
         })
     }

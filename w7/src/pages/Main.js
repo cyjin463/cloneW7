@@ -14,10 +14,7 @@ function Main(props) {
     console.log(post_list)
 
     React.useEffect(() => {
-        if (!post_list) {
-            console.log("post_list가 없습니다.")
-            dispatch(postActions.getLikePostWeekDB());
-        }
+        dispatch(postActions.getLikePostWeekDB());
     }, [])
 
     const trendingPost = () => {
