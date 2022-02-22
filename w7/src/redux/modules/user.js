@@ -72,7 +72,6 @@ const signupDB = (username, nickname, password, ProfileImage) => {
         form.append('nickname', nickname);
         form.append('password', password);
         form.append('profileImage', ProfileImage ? ProfileImage : null)
-        // ProfileImage: ProfileImage ? ProfileImage : null,
 
         await apis
             .post("/user/signup", form)
