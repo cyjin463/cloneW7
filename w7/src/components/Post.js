@@ -1,28 +1,29 @@
 import React from 'react';
 import styled from 'styled-components';
-
+import { history } from '../redux/configureStore';
 import heart from '../Asset/heart.svg'
 
 function Post(props) {
     const {
         postingId,
         title,
+        thumnail,
         content,
         dayBefore,
         commentCnt,
         nickname,
+        profileImage,
+        tag,
         like,
-        imageFile,
-        userImage,
     } = props;
 
     return (
         <PostContainer>
             <PostStyled>
-                <a href="#" alt="">
+                <a onClick={() => { history.push(`/post/${postingId}`) }} alt="">
                     <PostImageStyled>
                         <img
-                            src={imageFile}
+                            src={thumnail}
                             alt="썸네일" />
                     </PostImageStyled>
                 </a>
@@ -32,7 +33,7 @@ function Post(props) {
                         flexDirection: "column",
                         padding: "1rem"
                     }}>
-                    <a href="#" alt="" style={{ textDecoration: "none" }}>
+                    <a onClick={() => { history.push(`/post/${postingId}`) }} alt="" style={{ textDecoration: "none" }}>
                         <h4 style={{ color: "#ECECEC" }}>{title}</h4>
                         <div>
                             <PostContentStyled style={{ color: "#D9D9D9" }}>{content}</PostContentStyled>
@@ -51,9 +52,9 @@ function Post(props) {
                     </div>
                 </div>
                 <PostUserBoxStyled style={{ textDecoration: "none" }}>
-                    <a href="#">
+                    <a onClick={() => { history.push(`/post/${postingId}`) }} alt="">
                         <img
-                            src={userImage}
+                            src={profileImage}
                             alt=""
                             style={{
                                 objectFit: "cover",

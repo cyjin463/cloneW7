@@ -66,13 +66,12 @@ const checkNicknameDB = (nickname, isCheckNickname) => {
 
 const signupDB = (username, nickname, password, ProfileImage) => {
     return async function (dispatch, getState, { history }) {
-        console.log(username, nickname, password)
+        console.log(username, nickname, password, ProfileImage)
         const form = new FormData();
         form.append('username', username);
         form.append('nickname', nickname);
         form.append('password', password);
         form.append('profileImage', ProfileImage ? ProfileImage : null)
-        // ProfileImage: ProfileImage ? ProfileImage : null,
 
         await apis
             .post("/user/signup", form)
@@ -89,68 +88,68 @@ const signupDB = (username, nickname, password, ProfileImage) => {
 
 const loginCheckM = () => {
     const token = sessionStorage.getItem("token");
-    return function (dispatch, getState, {history}) {
+    return function (dispatch, getState, { history }) {
         axios.post("http://yuseon.shop/islogin", {}, {
-            headers: { 
-                "Authorization": `${token}`, 
+            headers: {
+                "Authorization": `${token}`,
             },
-            })
+        })
             .then((res) => {
                 console.log("로그인체크")
-            dispatch(setLogin(
-                {
-                username: res.data.username,
-                nickname: res.data.nickname
-                })
-            );
+                dispatch(setLogin(
+                    {
+                        username: res.data.username,
+                        nickname: res.data.nickname
+                    })
+                );
             })
             .catch((err) => {
-            console.log("로그인 확인 실패", err)
+                console.log("로그인 확인 실패", err)
             })
-        }
-        }
+    }
+}
 
 const loginM = (username, password) => {
     return function (dispatch, getState, { history }) {
-    axios
-    /* .post('http://yuseon.shop/user/login',{ */
-    .post('http://yuseon.shop/user/login',{
-        username: username,
-        password: password,
-    })
-    .then((res) => {
-        const token_res = res.headers.authorization;
-        setToken(token_res);
-        return token_res
-    })
-    .then((token_res) =>{
-        axios({
-        method: "post",
-        url: "http://yuseon.shop/islogin",
-        headers: {
-            /* "content-type": "applicaton/json;charset=UTF-8",
-            "accept": "application/json",  */
-            "Authorization": `${token_res}`,
-        },
-        })
-        .then((res) => {
-            console.log(res,"토큰주고 정보받기")
-        dispatch(setLogin(
-            {
-            imgUrl: res.data.imgUrl,
-            username: res.data.username,
-            nickname: res.data.nickname,
+        axios
+            /* .post('http://yuseon.shop/user/login',{ */
+            .post('http://yuseon.shop/user/login', {
+                username: username,
+                password: password,
             })
-        );
-        })
-        .catch((err) => {
-        console.log("로그인 확인 실패", err)
-        })
-        history.replace('/')
-    })
-    .catch((err) => {
-        window.alert("이메일이나 패스워드를 다시 확인해주세요!")
-    })
+            .then((res) => {
+                const token_res = res.headers.authorization;
+                setToken(token_res);
+                return token_res
+            })
+            .then((token_res) => {
+                axios({
+                    method: "post",
+                    url: "http://yuseon.shop/islogin",
+                    headers: {
+                        /* "content-type": "applicaton/json;charset=UTF-8",
+                        "accept": "application/json",  */
+                        "Authorization": `${token_res}`,
+                    },
+                })
+                    .then((res) => {
+                        console.log(res, "토큰주고 정보받기")
+                        dispatch(setLogin(
+                            {
+                                imgUrl: res.data.imgUrl,
+                                username: res.data.username,
+                                nickname: res.data.nickname,
+                            })
+                        );
+                    })
+                    .catch((err) => {
+                        console.log("로그인 확인 실패", err)
+                    })
+                history.replace('/')
+            })
+            .catch((err) => {
+                window.alert("이메일이나 패스워드를 다시 확인해주세요!")
+            })
     };
 };
 
@@ -170,20 +169,20 @@ export default handleActions(
         }),
         [LOGIN]: (state, action) =>
             produce(state, (draft) => {
-            setCookie("is_login", "success");
-            draft.userInfo = action.payload.user;
-            draft.isLogin = true;
-        }),
+                setCookie("is_login", "success");
+                draft.userInfo = action.payload.user;
+                draft.isLogin = true;
+            }),
         [LOG_OUT]: (state, action) =>
             produce(state, (draft) => {
-            sessionStorage.removeItem("token");
-            deleteCookie("is_login");
-            draft.userInfo = {
-            username: "",
-            nickname: "",
-            };
-            draft.isLogin = false;
-        }),
+                sessionStorage.removeItem("token");
+                deleteCookie("is_login");
+                draft.userInfo = {
+                    username: "",
+                    nickname: "",
+                };
+                draft.isLogin = false;
+            }),
 
         [USER_INFO]: (state, action) => {
             console.log("setUserInfo 리듀서로 도착했습니다", state, action.payload)

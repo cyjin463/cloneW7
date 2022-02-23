@@ -4,7 +4,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import TextAreaAutoResize from "react-textarea-autosize";
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { actionCreators as postActions } from '../redux/modules/post';
 
 // 여기 css를 수정해서 코드 하이라이팅 커스텀 가능
@@ -19,13 +19,33 @@ import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 import '@toast-ui/editor/dist/theme/toastui-editor-dark.css';
 
-export default function PostAdd() {
+export default function PostAdd(props) {
     const dispatch = useDispatch();
     const editorRef = React.createRef();
     const [contents, setContents] = React.useState("");
     const [title, setTitle] = React.useState("");
     const [hashtag, setHashtag] = React.useState("");
     const [hashArr, setHashArr] = React.useState([]);
+    const [previewUrlList, setPreviewUrlList] = React.useState([]);
+    const token = sessionStorage.getItem("token");
+
+    const post_list = useSelector(state => state.post.list2)
+    console.log(post_list.content)
+	const postingId = props.match.params.id
+    const is_edit = postingId ? true : false
+
+    const user_info = useSelector(state => state.user.userInfo)
+    const nickname = user_info.nickname
+
+
+    const editPost = () => {
+        const _contents = {
+            nickname : nickname,
+            title : title,
+            content : contents,
+        }
+        dispatch(postActions.editPostDB(_contents,postingId))
+    }
 
 
     React.useEffect(() => {
@@ -39,24 +59,25 @@ export default function PostAdd() {
                 .addHook("addImageBlobHook", (blob, callback) => {
                     (async () => {
                         let formData = new FormData();
-                        formData.append("file", blob);
+                        formData.append("image", blob);
 
-                        console.log("이미지가 업로드 됐습니다.");
-
-                        const { data: filename } = await axios.post(
-                            "/file/upload",
-                            formData,
-                            {
-                                header: { "content-type": "multipart/formdata" },
+                        await axios.post("http://yuseon.shop/api/posting/image",
+                            formData, {
+                            headers: {
+                                "Authorization": `${token}`,
                             }
-                        );
+                        },
+                        ).then((res) => {
+                            console.log(res.data);
+                            const imageUrl = res.data
 
-                        const imageUrl = "http://localhost:8080/file/upload/" + filename;
-
-                        // Image 를 가져올 수 있는 URL 을 callback 메서드에 넣어주면 자동으로 이미지를 가져온다.
-                        callback(imageUrl, "iamge");
+                            // Image 를 가져올 수 있는 URL 을 callback 메서드에 넣어주면 자동으로 이미지를 가져온다.
+                            callback(imageUrl, "image");
+                            return imageUrl;
+                        }).then((res) => {
+                            setPreviewUrlList(previewUrlList.concat(res))
+                        })
                     })();
-
                     return false;
                 });
         }
@@ -75,19 +96,21 @@ export default function PostAdd() {
             return;
         }
 
-        dispatch(postActions.addPostDB(title, contents,))
+        dispatch(postActions.addPostDB(title, contents, previewUrlList, user_info.nickname, hashArr))
         editorRef.current.value = "";
     }
 
 
     return (
         <div style={{ backgroundColor: "black" }}>
-            <div style={{
+            {is_edit
+        ?   <div style={{
                 paddingTop: "2rem",
                 paddingLeft: "2rem",
                 paddingRight: "2rem",
             }}>
                 <TextAreaAutoResize
+                    defaultValue={post_list.title}
                     placeholder="제목을 입력해주세요."
                     onChange={changeTitle}
                     style={{
@@ -109,25 +132,81 @@ export default function PostAdd() {
 
                     </div>
                     <TagInputBox
-                        type="text"
-                        defaultValue={hashtag}
-                        placeholder="태그를 입력해주세요"
+                    type="text"
+                    defaultValue={post_list.tag}
+                    placeholder="태그를 입력해주세요"
                     />
                 </TagBox>
 
                 <TitleFooter />
             </div>
+            :       <div style={{
+                        paddingTop: "2rem",
+                        paddingLeft: "2rem",
+                        paddingRight: "2rem",
+                    }}>
+                    <TextAreaAutoResize
+                        placeholder="제목을 입력해주세요."
+                        onChange={changeTitle}
+                        style={{
+                            padding: "0px",
+                            fontSize: "2.75rem",
+                            width: "100%",
+                            resize: "none",
+                            lineHeight: "1.5",
+                            outline: "none",
+                            border: "none",
+                            fontWeight: "bold",
+                            overflow: "hidden",
+                            backgroundColor: "black",
+                            color: "#fff"
+                        }}
+                    />
+                    <TagBox>
+                        <div className="HashWrapOuter">
+
+                        </div>
+                        <TagInputBox
+                        type="text"
+                        defaultValue={hashtag}
+                        placeholder="태그를 입력해주세요"
+                        />
+                    </TagBox>
+
+                    <TitleFooter />
+                </div>
+            }
+
+
             <div style={{
                 paddingLeft: "2rem",
                 paddingRight: "2rem",
             }}>
+                {is_edit
+                ?
+                <Editor
+                    height="78vh"
+                    previewStyle="vertical"
+                    initialEditType="markdown"
+                    initialValue={(post_list.content) = "null" ? '' : `${post_list.content}`}
+                    plugins={[colorSyntax, [codeSyntaxHighlight, { highlighter: Prism }]]}
+                    onChange={() => {
+                        const innerTxt =  editorRef.current.getInstance().getMarkdown();
+                        setContents(innerTxt);
+                    }}
+                    style={{ color: "#ABABAB" }
+                    }
+                    ref={editorRef}
+                    theme='dark'
+                />
+                :
                 <Editor
                     height="78vh"
                     previewStyle="vertical"
                     initialEditType="markdown"
                     plugins={[colorSyntax, [codeSyntaxHighlight, { highlighter: Prism }]]}
                     onChange={() => {
-                        const innerTxt = editorRef.current.getInstance().getMarkdown();
+                        const innerTxt =  editorRef.current.getInstance().getMarkdown();
                         setContents(innerTxt);
                     }}
                     style={{ color: "#ABABAB" }
@@ -136,29 +215,9 @@ export default function PostAdd() {
                     theme='dark'
                 />
 
+            }
+            </div> 
 
-                {/* <div class="sc-dSfdvi gaQEvd" style="width: 646px;">
-                    <div class="sc-jivBlf koLpTv">
-                        <button class="sc-jvvksu iHbtuu">
-                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
-                            </svg>
-                            <span>나가기</span>
-                        </button>
-                        <div class="sc-hkgtus gyNfph">
-                            <button color="transparent" class="sc-pVTFL hLiqkr sc-bSqaIl kMrvMh">
-                                임시저장
-                            </button>
-                            <button color="teal" class="sc-pVTFL bTEpzi sc-bSqaIl kMrvMh">
-                                출간하기
-                            </button>
-                        </div>
-                    </div>
-                </div> */}
-
-
-
-            </div>
             <WriteFooterOuter>
                 <WriteFooterInner>
                     <ExitBtn>
@@ -173,9 +232,15 @@ export default function PostAdd() {
                     </ExitBtn>
                     <WriteSaveOuter>
                         <TemporaryStorage>임시저장</TemporaryStorage>
+                        {is_edit? 
                         <SaveBtn
-                            onClick={postWrite}
-                        >출간하기</SaveBtn>
+                        onClick={editPost}
+                    >수정하기</SaveBtn>
+                    :
+                    <SaveBtn
+                    onClick={postWrite}
+                    >출간하기</SaveBtn>
+                    }
                     </WriteSaveOuter>
                 </WriteFooterInner>
             </WriteFooterOuter>

@@ -15,19 +15,24 @@ function CommentWrite(props) {
     const textareaRef = React.createRef(null);
     const user_info = useSelector(state => state.user.userInfo)
     const nickname = user_info.nickname;
-    const is_token = localStorage.getItem("token") ? true : false;
+    const is_token = sessionStorage.getItem("token") ? true : false;
+    // const is_me=(nickname === post?.loginId)?true:false;
 
     const changeComments = (e) => {
         setCommentContent(e.target.value);
     }
 
     const commentWrite = () => {
+        if (is_token === false) {
+            window.alert("로그인 후 작성해주세요.")
+            return;
+        }
         if (commentContent === "") {
-            window.alert("댓글 입력해주세요.");
+            window.alert("댓글을 입력해주세요.");
             return;
         }
 
-        dispatch(commentActions.addCommentDB(nickname, commentContent, postId))
+        dispatch(commentActions.addCommentDB(nickname, commentContent, postId, user_info.imgUrl))
         textareaRef.current.value = "";
     }
 
