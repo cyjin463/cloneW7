@@ -17,6 +17,7 @@ const initialState = {
         imgUrl: "",
     },
     isLogin: false,
+    userLikes: [],
 };
 
 
@@ -26,6 +27,8 @@ const CHECK_NICKNAME = "CHECK_NICKNAME";
 const LOGIN = "LOGIN"
 const LOG_OUT = "LOG_OUT"
 const USER_INFO = "USER_INFO"
+const ADD_LIKE = "ADD_LIKE";
+const DELETE_LIKE = "DELETE_LIKE";
 
 
 // action creators
@@ -33,6 +36,8 @@ const setLogin = createAction(LOGIN, user => ({ user }));
 const logOut = createAction(LOG_OUT, () => ({}));
 const setCheckUsername = createAction(CHECK_USERNAME, (isCheckUsername) => ({ isCheckUsername }));
 const setCheckNickname = createAction(CHECK_NICKNAME, (isCheckNickname) => ({ isCheckNickname }));
+const addLike = createAction(ADD_LIKE, (postingId) => ({ postingId }))
+const deleteLike = createAction(DELETE_LIKE, (postingId) => ({ postingId }))
 
 
 
@@ -139,6 +144,7 @@ const loginM = (username, password) => {
                                 imgUrl: res.data.imgUrl,
                                 username: res.data.username,
                                 nickname: res.data.nickname,
+                                userLikes: res.data.userLikes,
                             })
                         );
                     })
@@ -189,6 +195,13 @@ export default handleActions(
             state.user = action.payload.userinfo
             return state
         },
+        [ADD_LIKE]: (state, action) => produce(state, (draft) => {
+            draft.userInfo.userLikes.push(action.payload.postingId);
+        }),
+        [DELETE_LIKE]: (state, action) => produce(state, (draft) => {
+            const filter_like = draft.userInfo.userLikes.filter((l) => l !== action.payload.postingId)
+            draft.userInfo.userLikes = filter_like;
+        }),
     },
     initialState
 );
@@ -204,6 +217,8 @@ const actionCreators = {
     signupDB,
     checkUsernameDB,
     checkNicknameDB,
+    addLike,
+    deleteLike,
 }
 
 

@@ -20,7 +20,7 @@ function Post(props) {
     return (
         <PostContainer>
             <PostStyled>
-                <a onClick={() => { history.push(`/post/${postingId}`) }} alt="">
+                <a onClick={() => { history.push(`/post/${postingId}`) }} alt="" style={{ cursor: "pointer" }}>
                     <PostImageStyled>
                         <img
                             src={thumnail}
@@ -33,7 +33,7 @@ function Post(props) {
                         flexDirection: "column",
                         padding: "1rem"
                     }}>
-                    <a onClick={() => { history.push(`/post/${postingId}`) }} alt="" style={{ textDecoration: "none" }}>
+                    <a onClick={() => { history.push(`/post/${postingId}`) }} alt="" style={{ textDecoration: "none", cursor: "pointer" }} >
                         <h4 style={{ color: "#ECECEC" }}>{title}</h4>
                         <div>
                             <PostContentStyled style={{ color: "#D9D9D9" }}>{content}</PostContentStyled>
@@ -52,7 +52,7 @@ function Post(props) {
                     </div>
                 </div>
                 <PostUserBoxStyled style={{ textDecoration: "none" }}>
-                    <a onClick={() => { history.push(`/post/${postingId}`) }} alt="">
+                    <a onClick={() => { history.push(`/post/${postingId}`) }} alt="" style={{ cursor: "pointer" }}>
                         <img
                             src={profileImage}
                             alt=""

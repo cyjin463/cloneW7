@@ -16,7 +16,7 @@ const Header = (props) => {
 
 	const is_login = useSelector(state => state.user.isLogin);
 	const user = useSelector(state => state.user.userInfo);
-	console.log(user)
+	// console.log(user)
 
 	return (
 		<>
