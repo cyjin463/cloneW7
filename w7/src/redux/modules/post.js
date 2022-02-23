@@ -16,16 +16,22 @@ const initialState = {
 const GET_POST = "GET_POST";
 const ADD_POST = "ADD_POST";
 const DETAIL_POST = "DETAIL_POST"
+const DELETE_POST = "DELETE_POST";
 const EDIT_LIKE = "EDIT_LIKE"
 const EDIT_DISLIKE = "EDIT_DISLIKE"
-
+const MY_POST = "MY_POST"
+const EDIT_POST = "EDIT_POST"
 
 // action creators
 const getPost = createAction(GET_POST, (post_list) => ({ post_list }));
 const addPost = createAction(ADD_POST, (post) => ({ post }));
 const detailPost = createAction(DETAIL_POST, (post_list2) => ({ post_list2 }));
+
 const editLike = createAction(EDIT_LIKE, (postingId, nickname, is_post_like, _like) => ({ postingId, nickname, is_post_like, _like }));
 const editDislike = createAction(EDIT_DISLIKE, (postingId, nickname, is_post_like, _like) => ({ postingId, nickname, is_post_like, _like }));
+const deletePost = createAction(DELETE_POST, (postingId) => ({postingId}));
+const myPost = createAction(MY_POST, (post) => ({post}));
+const editPost = createAction(EDIT_POST, (contents) => ({contents}));
 
 
 //middleware actions
@@ -111,6 +117,26 @@ const detailPostDB = (postingId) => {
     }
 }
 
+const deletePostDB = (nickname, postingid) => {
+    return async function (dispatch, getState, {history}) {
+        const token = sessionStorage.getItem('token');
+        console.log(nickname,postingid)
+        await apis.delete(`/api/posting/${postingid}`,
+        {
+            headers: {
+                "Authorization": `${token}`
+            }
+        }
+        ).then(function (res) {
+            dispatch(deletePost(postingid))
+            history.push('/')
+            window.location.reload()
+        }).catch((err) => {
+            console.log("게시글 삭제가 실패했습니다.", err)
+        })
+    }
+}
+
 const editLikeDB = (postingId, nickname, is_post_like) => {
     return function (dispatch, getState, { history }) {
         const token = sessionStorage.getItem('token');
@@ -153,6 +179,49 @@ const editDislikeDB = (postingId, nickname, is_post_like) => {
     }
 }
 
+const myPostDB = (nickname) => {
+    return function (dispatch, getState, { history }) {
+        console.log(nickname)
+        axios
+            .get(`http://yuseon.shop/api/mypage/${nickname}`)
+            .then((res) => {
+                console.log(res)
+                dispatch(myPost(res.data))
+            }).catch((err) => {
+                console.log(err)
+            })
+    }
+}
+
+const editPostDB = (contents, postingId) => {
+    return async function (dispatch, getState, {history}) {
+        const token = sessionStorage.getItem('token');
+        console.log(contents)
+        await apis.put(`/api/posting/${postingId}`,
+        {
+            nickname : contents.nickname,
+            title : contents.title,
+            content : contents.contents,
+        },
+        {
+            headers: {
+                "Authorization": `${token}`
+            }
+        }
+        ).then((res) => {
+                console.log("수정성공",res)
+                dispatch(editPost(contents))
+                history.push( "/" )
+                }
+            )
+            .catch((err) => {
+                console.log(err)
+                window.alert("수정 실패")
+            })
+    }
+}
+
+
 
 // reducer
 export default handleActions(
@@ -173,6 +242,9 @@ export default handleActions(
             console.log(action.payload._like)
             draft.list2.like -= 1;
         }),
+        [EDIT_POST]: (state,action) => produce(state, (draft) => {
+            console.log("수정합니다")
+        })
     },
     initialState
 );
@@ -192,6 +264,12 @@ const actionCreators = {
     editLikeDB,
     editDislike,
     editDislikeDB,
+    deletePost,
+    deletePostDB,
+    myPost,
+    myPostDB,
+    editPost,
+    editPostDB,
 };
 
 export { actionCreators }

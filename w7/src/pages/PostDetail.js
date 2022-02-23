@@ -25,10 +25,25 @@ const PostDetail = (props) => {
 
     const comment_list = useSelector(state => state.comment.list)
 
+    const login_user = user_info.username.split('@')[0]
+
+    const writer = post_list.username.split('@')[0]
+
+    const nickname = post_list.nickname
+
+    const [isLike, setIsLike] = React.useState(false);
+
+
     useEffect(() => {
+        console.log("ehlsk")
+
         dispatch(postActions.detailPostDB(post_id))
     }, [comment_list.length]);
 
+    const deleteAction = () => {
+        console.log("postList화면에서", post_id, nickname, "의 삭제버튼을 눌렀어요.");
+        dispatch(postActions.deletePostDB(nickname, post_id))
+    }
 
     const handleLike = () => {
         if (is_post_like) {
@@ -46,6 +61,49 @@ const PostDetail = (props) => {
                         <div style={{ width: "760", height: "70", marginBottom: "32px" }}>
                             <h1 style={{ lineHeight: "1.5", fontWeight: "800", fontSize: "3rem", color: "#ececec" }}>{post_list.title}</h1>
                         </div>
+                        { writer === login_user ?
+                        <div style={{display: "flex",
+                                    WebkitBoxPack: "end",
+                                    justifyContent: "flex-end"}}>
+                                        <button style={{
+                                                padding: "0px",
+                                                outline: "none",
+                                                border: "none",
+                                                background: "none",
+                                                fontSize: "inherit",
+                                                cursor: "pointer",
+                                                color: "#acacac",
+                                        }}>통계</button>
+
+                                        <button style={{
+                                                padding: "0px",
+                                                outline: "none",
+                                                border: "none",
+                                                background: "none",
+                                                fontSize: "inherit",
+                                                cursor: "pointer",
+                                                color: "#acacac",
+                                                marginLeft: "0.5rem",
+                                                }}
+                                                onClick={() => {
+                                                    history.push(`/write/${post_id}`)
+                                                }}
+                                        >수정</button>
+
+                                        <button style={{
+                                                padding: "0px",
+                                                outline: "none",
+                                                border: "none",
+                                                background: "none",
+                                                fontSize: "inherit",
+                                                cursor: "pointer",
+                                                color: "#acacac",
+                                                marginLeft: "0.5rem",
+                                                }}
+                                                onClick={deleteAction}
+                                        >삭제</button>
+                        </div> : null
+                        }
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                             <div style={{ fontSize: "1rem", color: "#ececec" }}>
                                 <span style={{ fontWeight: "400" }}><a>{post_list.nickname}</a></span>

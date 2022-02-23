@@ -1,11 +1,22 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { actionCreators as postActions } from "../redux/modules/post"
 
 const Mypage = () => {
 
+    const dispatch = useDispatch()
+
     const user_info = useSelector(state => state.user.userInfo)
     console.log(user_info)
+
+    const nickname = user_info.nickname
+    console.log(nickname)
+
+    React.useEffect(() => {
+        console.log("ehlsk")
+        dispatch(postActions.myPostDB(nickname))
+    }, []);
+
     return (
         <div style={{width: "768px",
                     marginLeft: "auto",
