@@ -15,12 +15,16 @@ const initialState = {
 const GET_POST = "GET_POST";
 const ADD_POST = "ADD_POST";
 const DETAIL_POST = "DETAIL_POST"
+const EDIT_LIKE = "EDIT_LIKE"
+const EDIT_DISLIKE = "EDIT_DISLIKE"
 
 
 // action creators
 const getPost = createAction(GET_POST, (post_list) => ({ post_list }));
 const addPost = createAction(ADD_POST, (post) => ({ post }));
 const detailPost = createAction(DETAIL_POST, (post_list2) => ({ post_list2 }));
+const editLike = createAction(EDIT_LIKE, (postingId, nickname) => ({ postingId, nickname }));
+const editDislike = createAction(EDIT_DISLIKE, (postingId, nickname) => ({ postingId, nickname }));
 
 
 //middleware actions
@@ -87,6 +91,8 @@ const addPostDB = (title, contents, previewUrlList, nickname, hashArr) => {
             console.log(res)
             dispatch(addPost(res.data))
             history.push('/')
+        }).catch((err) => {
+            console.log(err);
         })
     }
 }
@@ -105,6 +111,42 @@ const detailPostDB = (postingId) => {
     }
 }
 
+const editLikeDB = (postingId, nickname) => {
+    return function (dispatch, getState, { history }) {
+        const token = sessionStorage.getItem('token');
+        console.log(postingId, nickname)
+        apis.post('/api/like', { "nickname": nickname, "postingId": postingId },
+            {
+                headers: {
+                    "Authorization": `${token}`
+                }
+            }
+        ).then((res) => {
+            console.log(res);
+        }).catch((err) => {
+            console.log(err);
+        })
+    }
+}
+
+const editDislikeDB = (postingId, nickname) => {
+    return function (dispatch, getState, { history }) {
+        const token = sessionStorage.getItem('token');
+        console.log(postingId, nickname)
+        apis.delete('/api/unlike', { "nickname": nickname, "postingId": postingId },
+            {
+                headers: {
+                    "Authorization": `${token}`
+                }
+            }
+        ).then((res) => {
+            console.log(res);
+        }).catch((err) => {
+            console.log(err);
+        })
+    }
+}
+
 
 // reducer
 export default handleActions(
@@ -117,6 +159,12 @@ export default handleActions(
         }),
         [DETAIL_POST]: (state, action) => produce(state, (draft) => {
             draft.list2 = action.payload.post_list2;
+        }),
+        [EDIT_LIKE]: (state, action) => produce(state, (draft) => {
+            console.log("여기까지 왔습니다.")
+        }),
+        [EDIT_DISLIKE]: (state, action) => produce(state, (draft) => {
+            console.log("여기까지 왔습니다.2")
         }),
     },
     initialState
@@ -133,6 +181,10 @@ const actionCreators = {
     addPostDB,
     detailPost,
     detailPostDB,
+    editLike,
+    editLikeDB,
+    editDislike,
+    editDislikeDB,
 };
 
 export { actionCreators }
