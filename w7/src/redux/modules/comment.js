@@ -11,7 +11,7 @@ const EDIT_COMMENT = "EDIT_COMMENT";
 
 // action creators
 const getComment = createAction(GET_COMMENT, (comment_list) => ({ comment_list }));
-const addComment = createAction(ADD_COMMENT, (nickname, comment, postId, profileImage, is_me) => ({ nickname, comment, postId, profileImage, is_me }));
+const addComment = createAction(ADD_COMMENT, (nickname, comment, postId, profileImage, is_me, createdAtComment, commentId) => ({ nickname, comment, postId, profileImage, is_me, createdAtComment, commentId }));
 const deleteComment = createAction(DELETE_COMMENT, (commentId) => ({ commentId }))
 const editComment = createAction(EDIT_COMMENT, (commentId, newComment) => ({ commentId, newComment }))
 
@@ -52,8 +52,10 @@ const addCommentDB = (nickname, comment, postId, profileImage) => {
             }
         ).then(function (response) {
             console.log(response)
+            const createdAtComment = response.data.createdAtComment;
+            const commentId = response.data.commentId;
             let is_me = true;
-            dispatch(addComment(nickname, comment, postId, profileImage, is_me))
+            dispatch(addComment(nickname, comment, postId, profileImage, is_me, createdAtComment, commentId))
         }).catch((err) => {
             console.log("댓글 추가하기 실패", postId, err);
         })
@@ -106,6 +108,7 @@ export default handleActions({
     }),
 
     [ADD_COMMENT]: (state, action) => produce(state, (draft) => {
+        console.log(action.payload)
         draft.list.push(action.payload);
     }),
 

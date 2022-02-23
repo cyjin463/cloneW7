@@ -25,12 +25,24 @@ const PostDetail = (props) => {
     const post_id = props.match.params.id
     // console.log(post_id)
 
+    const [isLike, setIsLike] = React.useState(false);
+
     React.useEffect(() => {
         console.log("ehlsk")
         dispatch(postActions.detailPostDB(post_id))
         dispatch(commentActions.getComment(comment_list))
-    }, []);
+    }, [comment_list.length]);
 
+
+    const handleLike = () => {
+        if (isLike) {
+            setIsLike(false)
+            dispatch(postActions.editDislikeDB(post_list.postingId, user_info.nickname));
+        } else {
+            setIsLike(true)
+            dispatch(postActions.editLikeDB(post_list.postingId, user_info.nickname));
+        }
+    }
 
     return (
         <>
@@ -46,37 +58,78 @@ const PostDetail = (props) => {
                                 <span> . </span>
                                 <span>{post_list.dayBefore},{post_list.comentCnt}</span>
                             </div>
-                            <div
-                                style={{
-                                    width: "73px",
-                                    height: "24px",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    WebkitBoxAlign: "center",
-                                    boxSizing: "inherit",
-                                    fontSize: "1rem",
-                                    color: "#d9d9d9",
-                                    backgroundColor: "#1e1e1e",
-                                }}>
-                                <button style={{
-                                    background: "#1e1e1e",
-                                    border: "1px solid #a0a0a0",
-                                    paddingLeft: "0.75rem",
-                                    paddingRight: "0.75rem",
-                                    display: "flex",
-                                    WebkitBoxAlign: "center",
-                                    alignItems: "center",
-                                    height: "1.5rem",
-                                    borderRadius: "0.75rem",
-                                    outline: "none",
-                                    color: "#a0a0a0"
-                                }}>
-                                    <svg width="0.75rem" height="0.75rem" viewBox="0 0 24 24" style={{ marginRight: "0.75rem", fontFamily: "inherit" }}>
-                                        <path fill="currentColor" d="M18 1l-6 4-6-4-6 5v7l12 10 12-10v-7z"></path>
-                                    </svg>
-                                    <span>{post_list.like}</span>
-                                </button>
-                            </div>
+                            {
+                                isLike
+                                    ?
+                                    <div
+                                        style={{
+                                            width: "73px",
+                                            height: "24px",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            WebkitBoxAlign: "center",
+                                            boxSizing: "inherit",
+                                            fontSize: "1rem",
+                                            color: "#d9d9d9",
+                                            backgroundColor: "#1e1e1e",
+                                        }}>
+                                        <button style={{
+                                            background: "#63E6BE",
+                                            border: "1px solid #63E6BE",
+                                            paddingLeft: "0.75rem",
+                                            paddingRight: "0.75rem",
+                                            display: "flex",
+                                            WebkitBoxAlign: "center",
+                                            alignItems: "center",
+                                            height: "1.5rem",
+                                            borderRadius: "0.75rem",
+                                            outline: "none",
+                                            color: "#1e1e1e"
+                                        }}
+                                            onClick={handleLike}
+                                        >
+                                            <svg width="0.75rem" height="0.75rem" viewBox="0 0 24 24" style={{ marginRight: "0.75rem", fontFamily: "inherit" }}>
+                                                <path fill="currentColor" d="M18 1l-6 4-6-4-6 5v7l12 10 12-10v-7z"></path>
+                                            </svg>
+                                            <span>{post_list.like}</span>
+                                        </button>
+                                    </div>
+                                    :
+                                    <div
+                                        style={{
+                                            width: "73px",
+                                            height: "24px",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            WebkitBoxAlign: "center",
+                                            boxSizing: "inherit",
+                                            fontSize: "1rem",
+                                            color: "#d9d9d9",
+                                            backgroundColor: "#1e1e1e",
+                                        }}>
+                                        <button style={{
+                                            background: "#1e1e1e",
+                                            border: "1px solid #a0a0a0",
+                                            paddingLeft: "0.75rem",
+                                            paddingRight: "0.75rem",
+                                            display: "flex",
+                                            WebkitBoxAlign: "center",
+                                            alignItems: "center",
+                                            height: "1.5rem",
+                                            borderRadius: "0.75rem",
+                                            outline: "none",
+                                            color: "#a0a0a0"
+                                        }}
+                                            onClick={handleLike}
+                                        >
+                                            <svg width="0.75rem" height="0.75rem" viewBox="0 0 24 24" style={{ marginRight: "0.75rem", fontFamily: "inherit" }}>
+                                                <path fill="currentColor" d="M18 1l-6 4-6-4-6 5v7l12 10 12-10v-7z"></path>
+                                            </svg>
+                                            <span>{post_list.like}</span>
+                                        </button>
+                                    </div>
+                            }
+
                         </div>
                         <div style={{ width: "100%", marginTop: "15px" }}>
                             {/* {post_list.tags.map((t, idx) => {
