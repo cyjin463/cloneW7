@@ -2,6 +2,7 @@ import { createAction, handleActions } from "redux-actions";
 import produce from "immer";
 import axios from 'axios';
 
+import { actionCreators as userActions } from './user';
 import apis from '../../common/api';
 
 // initialState
@@ -25,11 +26,13 @@ const EDIT_POST = "EDIT_POST"
 const getPost = createAction(GET_POST, (post_list) => ({ post_list }));
 const addPost = createAction(ADD_POST, (post) => ({ post }));
 const detailPost = createAction(DETAIL_POST, (post_list2) => ({ post_list2 }));
+
+const editLike = createAction(EDIT_LIKE, (postingId, nickname, is_post_like, _like) => ({ postingId, nickname, is_post_like, _like }));
+const editDislike = createAction(EDIT_DISLIKE, (postingId, nickname, is_post_like, _like) => ({ postingId, nickname, is_post_like, _like }));
 const deletePost = createAction(DELETE_POST, (postingId) => ({postingId}));
-const editLike = createAction(EDIT_LIKE, (postingId, nickname) => ({ postingId, nickname }));
-const editDislike = createAction(EDIT_DISLIKE, (postingId, nickname) => ({ postingId, nickname }));
 const myPost = createAction(MY_POST, (post) => ({post}));
 const editPost = createAction(EDIT_POST, (contents) => ({contents}));
+
 
 //middleware actions
 const getDatePostDB = () => {
@@ -58,7 +61,6 @@ const getLikePostMonthDB = () => {
 const getLikePostWeekDB = () => {
     return async function (dispatch, getState, { history }) {
         await apis.get('http://yuseon.shop/api/posting/likes/week').then((response) => {
-            console.log((response.data.articles))
             dispatch(getPost(response.data.articles))
         }).catch((err) => {
             console.log(err)
@@ -103,11 +105,11 @@ const addPostDB = (title, contents, previewUrlList, nickname, hashArr) => {
 
 const detailPostDB = (postingId) => {
     return function (dispatch, getState, { history }) {
-        console.log(postingId)
+        // console.log(postingId)
         axios
             .get(`http://yuseon.shop/api/posting/${postingId}`)
             .then((res) => {
-                console.log(res)
+                // console.log(res)
                 dispatch(detailPost(res.data))
             }).catch((err) => {
                 console.log(err)
@@ -135,10 +137,10 @@ const deletePostDB = (nickname, postingid) => {
     }
 }
 
-const editLikeDB = (postingId, nickname) => {
+const editLikeDB = (postingId, nickname, is_post_like) => {
     return function (dispatch, getState, { history }) {
         const token = sessionStorage.getItem('token');
-        console.log(postingId, nickname)
+        // console.log(postingId, nickname, is_post_like)
         apis.post('/api/like', { "nickname": nickname, "postingId": postingId },
             {
                 headers: {
@@ -147,27 +149,33 @@ const editLikeDB = (postingId, nickname) => {
             }
         ).then((res) => {
             console.log(res);
+            let _like = getState().post.list2.like + 1
+            dispatch(userActions.addLike(postingId))
+            dispatch(editLike(postingId, nickname, is_post_like, _like));
         }).catch((err) => {
             console.log(err);
         })
     }
 }
 
-const editDislikeDB = (postingId, nickname) => {
+const editDislikeDB = (postingId, nickname, is_post_like) => {
     return function (dispatch, getState, { history }) {
         const token = sessionStorage.getItem('token');
-        console.log(postingId, nickname)
-        apis.delete('/api/unlike', { "nickname": nickname, "postingId": postingId },
+        // console.log(postingId, nickname, is_post_like)
+        apis.delete('/api/unlike',
             {
-                headers: {
-                    "Authorization": `${token}`
-                }
+                data: { "nickname": nickname, "postingId": postingId },
+                headers: { "Authorization": `${token}` }
             }
         ).then((res) => {
             console.log(res);
-        }).catch((err) => {
-            console.log(err);
+            let _like = getState().post.list2.like - 1;
+            dispatch(userActions.deleteLike(postingId))
+            dispatch(editDislike(postingId, nickname, false, _like));
         })
+            .catch((err) => {
+                console.log("dislike 실패", err);
+            })
     }
 }
 
@@ -228,10 +236,11 @@ export default handleActions(
             draft.list2 = action.payload.post_list2;
         }),
         [EDIT_LIKE]: (state, action) => produce(state, (draft) => {
-            console.log("여기까지 왔습니다.")
+            draft.list2.like += 1;
         }),
         [EDIT_DISLIKE]: (state, action) => produce(state, (draft) => {
-            console.log("여기까지 왔습니다.2")
+            console.log(action.payload._like)
+            draft.list2.like -= 1;
         }),
         [EDIT_POST]: (state,action) => produce(state, (draft) => {
             console.log("수정합니다")

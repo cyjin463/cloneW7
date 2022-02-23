@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Grid from '../elements/Geid';
 import { history } from '../redux/configureStore'
@@ -11,16 +11,19 @@ import CommentList from '../components/CommentList';
 import CommentWrite from '../components/CommentWrite';
 
 const PostDetail = (props) => {
-
     const dispatch = useDispatch()
 
+    const post_id = props.match.params.id
+    // console.log(post_id)
+
     const post_list = useSelector(state => state.post.list2)
-    console.log('post_list', post_list)
+    // console.log('post_list', post_list)
 
     const user_info = useSelector(state => state.user.userInfo)
-    const comment_list = useSelector(state => state.comment.list)
+    // console.log(user_info)
+    const is_post_like = user_info.userLikes.includes(Number(post_id))
 
-    const post_id = props.match.params.id
+    const comment_list = useSelector(state => state.comment.list)
 
     const login_user = user_info.username.split('@')[0]
 
@@ -31,10 +34,10 @@ const PostDetail = (props) => {
     const [isLike, setIsLike] = React.useState(false);
 
 
-    React.useEffect(() => {
+    useEffect(() => {
         console.log("ehlsk")
+
         dispatch(postActions.detailPostDB(post_id))
-        dispatch(commentActions.getComment(comment_list))
     }, [comment_list.length]);
 
     const deleteAction = () => {
@@ -43,12 +46,10 @@ const PostDetail = (props) => {
     }
 
     const handleLike = () => {
-        if (isLike) {
-            setIsLike(false)
-            dispatch(postActions.editDislikeDB(post_list.postingId, user_info.nickname));
+        if (is_post_like) {
+            dispatch(postActions.editDislikeDB(post_list.postingId, user_info.nickname, is_post_like))
         } else {
-            setIsLike(true)
-            dispatch(postActions.editLikeDB(post_list.postingId, user_info.nickname));
+            dispatch(postActions.editLikeDB(post_list.postingId, user_info.nickname, is_post_like));
         }
     }
 
@@ -110,7 +111,7 @@ const PostDetail = (props) => {
                                 <span>{post_list.dayBefore},{post_list.comentCnt}</span>
                             </div>
                             {
-                                isLike
+                                is_post_like
                                     ?
                                     <div
                                         style={{
@@ -183,8 +184,8 @@ const PostDetail = (props) => {
 
                         </div>
                         <div style={{ width: "100%", marginTop: "15px" }}>
-                            {/* {post_list.tags.map((t, idx) => {
-                                console.log(t)
+                            {post_list.tags.map((t, idx) => {
+                                // console.log(t)
                                 return (
                                     <a
                                         key={idx}
@@ -200,7 +201,7 @@ const PostDetail = (props) => {
                                         {t}
                                     </a>
                                 )
-                            })} */}
+                            })}
                         </div>
                         <div>
                             <img src={post_list.thumnail} />
@@ -219,7 +220,7 @@ const PostDetail = (props) => {
                         <div style={{ color: "WenkitLink", cursor: "pointer", textDecoration: "underline" }}>
                             <img src={post_list.profileImage}
                                 style={{
-                                    display: "block", width: "8rem", height: "8rem", borderRadius: "505", objectFit: "cover", boxShadow: "rgb(0 0 0 / 6%) 0px 0px 4px 0px"
+                                    display: "block", width: "8rem", height: "8rem", borderRadius: "50%", objectFit: "cover", boxShadow: "rgb(0 0 0 / 6%) 0px 0px 4px 0px"
                                 }} />
                         </div>
                         <div style={{ display: "flex", flexDirection: "column", WebkitBoxPack: "center", justifyContent: "center", marginLeft: "1rem" }}>
