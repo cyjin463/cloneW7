@@ -25,7 +25,7 @@ function App() {
         <Route path="/recent" exact component={MainRecent} />
         <Route path="/write" exact component={PostAdd} />
         <Route path="/write/:id" exact component={PostAdd} />
-        <Route path="/:nickname" exact component={Mypage} />
+        <Route path="/My/:nickname" exact component={Mypage} />
       </ConnectedRouter>
     </div>
   );
