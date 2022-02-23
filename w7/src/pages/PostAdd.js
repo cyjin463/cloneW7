@@ -28,8 +28,6 @@ export default function PostAdd(props) {
     const [hashArr, setHashArr] = React.useState([]);
     const [previewUrlList, setPreviewUrlList] = React.useState([]);
     const token = sessionStorage.getItem("token");
-<<<<<<< HEAD
-=======
 
     const post_list = useSelector(state => state.post.list2)
     console.log(post_list.content)
@@ -48,9 +46,7 @@ export default function PostAdd(props) {
         }
         dispatch(postActions.editPostDB(_contents,postingId))
     }
->>>>>>> 22.02.19_cyj
 
-    const user_info = useSelector(state => state.user.userInfo)
 
     React.useEffect(() => {
         if (editorRef.current) {
@@ -144,8 +140,6 @@ export default function PostAdd(props) {
 
                 <TitleFooter />
             </div>
-<<<<<<< HEAD
-=======
             :       <div style={{
                         paddingTop: "2rem",
                         paddingLeft: "2rem",
@@ -183,7 +177,6 @@ export default function PostAdd(props) {
                 </div>
             }
 
->>>>>>> 22.02.19_cyj
 
             <div style={{
                 paddingLeft: "2rem",
@@ -221,13 +214,9 @@ export default function PostAdd(props) {
                     ref={editorRef}
                     theme='dark'
                 />
-<<<<<<< HEAD
-            </div>
-=======
 
             }
             </div> 
->>>>>>> 22.02.19_cyj
 
             <WriteFooterOuter>
                 <WriteFooterInner>
