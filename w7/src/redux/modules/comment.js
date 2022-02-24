@@ -2,6 +2,7 @@ import { createAction, handleActions } from "redux-actions";
 import { produce } from "immer";
 import axios from 'axios';
 import apis from '../../common/api';
+import { useSelector } from 'react-redux';
 
 // actions
 const GET_COMMENT = "GET_COMMENT";
@@ -10,31 +11,32 @@ const DELETE_COMMENT = "DELETE_COMMENT";
 const EDIT_COMMENT = "EDIT_COMMENT";
 
 // action creators
-const getComment = createAction(GET_COMMENT, (comment_list) => ({ comment_list }));
-const addComment = createAction(ADD_COMMENT, (nickname, comment, postId, profileImage, is_me, createdAtComment, commentId) => ({ nickname, comment, postId, profileImage, is_me, createdAtComment, commentId }));
-const deleteComment = createAction(DELETE_COMMENT, (commentId) => ({ commentId }))
-const editComment = createAction(EDIT_COMMENT, (commentId, newComment) => ({ commentId, newComment }))
+const getComment = createAction(GET_COMMENT, (postingId, comment_list) => ({ postingId, comment_list }));
+const addComment = createAction(ADD_COMMENT, (nickname, comment, postingId, profileImage, is_me, createdAtComment, commentId) => ({ nickname, comment, postingId, profileImage, is_me, createdAtComment, commentId }));
+const deleteComment = createAction(DELETE_COMMENT, (postingId, commentId) => ({ postingId, commentId }))
+const editComment = createAction(EDIT_COMMENT, (postingId, commentId, newComment) => ({ postingId, commentId, newComment }))
 
 //initialState
 const initialState = {
     list: [],
 }
 
-//middleware actions
-const getCommentDB = (postId) => {
-    return async function (dispatch, getState) {
-        if (!postId) {
-            return;
-        }
+// middleware actions
+// const getCommentDB = (postId) => {
+//     return async function (dispatch, getState) {
+//         if (!postId) {
+//             return;
+//         }
 
-        await apis.get(`/api/comments/${postId}`)
-            .then((response) => {
-                dispatch(getComment(postId, response.data.comments))
-            }).catch((err) => {
-                console.log("댓글 가져오기 실패", postId, err);
-            })
-    }
-}
+//         await apis.get(`/api/comments/${postId}`)
+//             .then((response) => {
+//                 console.log("response", postId, response.data.comments)
+//                 // dispatch(getComment(postId, response.data.comments))
+//             }).catch((err) => {
+//                 console.log("댓글 가져오기 실패", postId, err);
+//             })
+//     }
+// }
 
 const addCommentDB = (nickname, comment, postId, profileImage) => {
     return async function (dispatch, getState, { history }) {
@@ -55,14 +57,16 @@ const addCommentDB = (nickname, comment, postId, profileImage) => {
             const createdAtComment = response.data.createdAtComment;
             const commentId = response.data.commentId;
             let is_me = true;
+
             dispatch(addComment(nickname, comment, postId, profileImage, is_me, createdAtComment, commentId))
+            window.location.reload();
         }).catch((err) => {
             console.log("댓글 추가하기 실패", postId, err);
         })
     }
 }
 
-const deleteCommentDB = (postId, commentId) => {
+const deleteCommentDB = (postId, nickname, commentId) => {
     return async function (dispatch, getState) {
         const token = sessionStorage.getItem('token');
         await apis.delete(`/api/comment/${commentId}`,
@@ -72,13 +76,15 @@ const deleteCommentDB = (postId, commentId) => {
                 }
             }
         ).then(function (response) {
-            dispatch(deleteComment(commentId))
+
+            dispatch(deleteComment(postId, commentId))
+            window.location.reload();
         }).catch((err) => {
             console.log("댓글 삭제가 실패했습니다.", err)
         })
     }
 }
-const editCommentDB = (nickname, newComment, commentId) => {
+const editCommentDB = (postId, nickname, newComment, commentId) => {
     return async function (dispatch, getState) {
         const token = sessionStorage.getItem('token');
         await apis.put(`/api/comment/${commentId}`, {
@@ -93,7 +99,8 @@ const editCommentDB = (nickname, newComment, commentId) => {
             }
         ).then(function (response) {
             console.log(response)
-            dispatch(editComment(commentId, newComment))
+            dispatch(editComment(postId, commentId, newComment))
+            window.location.reload();
         }).catch((err) => {
             console.log("댓글 수정에 실패했습니다.", err)
         })
@@ -103,6 +110,7 @@ const editCommentDB = (nickname, newComment, commentId) => {
 //reducer
 export default handleActions({
     [GET_COMMENT]: (state, action) => produce(state, (draft) => {
+        console.log(action.payload.comment_list)
         draft.list = action.payload.comment_list;
     }),
 
@@ -125,7 +133,7 @@ export default handleActions({
 
 
 const actionCreators = {
-    getCommentDB,
+    // getCommentDB,
     getComment,
     addCommentDB,
     addComment,

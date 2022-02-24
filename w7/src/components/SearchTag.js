@@ -6,7 +6,7 @@ import { history } from '../redux/configureStore';
 function SearchTag(props) {
 
     const { postingId, thumnail, title, content, dayBefore, commentCnt, nickname, tag, profileImage } = props;
-
+    console.log(thumnail)
     return (
 
         <SearchTagContent>
@@ -38,18 +38,20 @@ function SearchTag(props) {
 
                 <div as="a" onClick={() => { history.push(`/post/${postingId}`) }} style={{ textDecoration: "none", cursor: "pointer" }}>
                     <div className="post-thumbnail"
-                        style={{ width: "100%", position: "relative", paddingTop: "50%", marginBottom: "1rem" }}>
-                        <img src={thumnail} alt="post-thumbnail"
-                            style={{
-                                position: "absolute",
-                                top: "0",
-                                left: "0",
-                                width: "100%",
-                                height: "100%",
-                                display: "block",
-                                objectFit: "cover"
-                            }}
-                        />
+                        style={{ width: "100%", position: "relative", paddingTop: "30%", marginBottom: "1rem" }}>
+                        {thumnail ?
+                            <img src={thumnail} alt="post-thumbnail"
+                                style={{
+                                    position: "absolute",
+                                    top: "0",
+                                    left: "0",
+                                    width: "100%",
+                                    height: "100%",
+                                    display: "block",
+                                    objectFit: "cover"
+                                }}
+                            />
+                            : null}
                     </div>
                 </div>
 

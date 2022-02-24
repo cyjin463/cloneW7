@@ -22,9 +22,11 @@ function Post(props) {
             <PostStyled>
                 <a onClick={() => { history.push(`/post/${postingId}`) }} alt="" style={{ cursor: "pointer" }}>
                     <PostImageStyled>
-                        <img
+                        {thumnail ? <img
                             src={thumnail}
                             alt="썸네일" />
+                            : null
+                        }
                     </PostImageStyled>
                 </a>
                 <div

@@ -8,7 +8,6 @@ import { actionCreators as commentActions } from '../redux/modules/comment';
 function Comment(props) {
     const dispatch = useDispatch();
     const { comment, commentId, createdAtComment, profileImage, nickname, postingId } = props;
-
     const [newComment, setNewComment] = React.useState("");
     const [isEdit, setIsEdit] = React.useState(false);
 
@@ -16,10 +15,8 @@ function Comment(props) {
     const is_me = (user_info.nickname === nickname) ? true : false;
 
     const handleCommentDelete = () => {
-        dispatch(commentActions.deleteCommentDB(nickname, commentId))
+        dispatch(commentActions.deleteCommentDB(postingId, nickname, commentId))
     }
-
-
 
     const handleCommentEdit = () => {
         if (isEdit) {
@@ -34,7 +31,7 @@ function Comment(props) {
     }
 
     const submitNewComment = () => {
-        dispatch(commentActions.editCommentDB(nickname, newComment, commentId))
+        dispatch(commentActions.editCommentDB(postingId, nickname, newComment, commentId))
             .then(() => {
                 setIsEdit(false);
             })
