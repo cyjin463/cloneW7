@@ -26,7 +26,7 @@ function CommentWrite(props) {
     const commentWrite = () => {
         if (is_token === false) {
             window.alert("로그인 후 작성해주세요.");
-            history.push('login');
+            history.push('/login');
             return;
         }
         if (commentContent === "") {

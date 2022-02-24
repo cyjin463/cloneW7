@@ -41,7 +41,6 @@ const initialState = {
 const addCommentDB = (nickname, comment, postId, profileImage) => {
     return async function (dispatch, getState, { history }) {
         const token = sessionStorage.getItem('token');
-
         await apis.post(`/api/comment`, {
             "nickname": nickname,
             "comment": comment,
@@ -110,7 +109,6 @@ const editCommentDB = (postId, nickname, newComment, commentId) => {
 //reducer
 export default handleActions({
     [GET_COMMENT]: (state, action) => produce(state, (draft) => {
-        console.log(action.payload.comment_list)
         draft.list = action.payload.comment_list;
     }),
 
