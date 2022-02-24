@@ -9,6 +9,7 @@ import apis from '../../common/api';
 const initialState = {
     list: [],
     list2: [],
+    tag_list: [],
 };
 
 
@@ -21,6 +22,7 @@ const EDIT_LIKE = "EDIT_LIKE"
 const EDIT_DISLIKE = "EDIT_DISLIKE"
 const MY_POST = "MY_POST"
 const EDIT_POST = "EDIT_POST"
+const SEARCH_TAG = "SEARCH_TAG"
 
 // action creators
 const getPost = createAction(GET_POST, (post_list) => ({ post_list }));
@@ -29,9 +31,10 @@ const detailPost = createAction(DETAIL_POST, (post_list2) => ({ post_list2 }));
 
 const editLike = createAction(EDIT_LIKE, (postingId, nickname, is_post_like, _like) => ({ postingId, nickname, is_post_like, _like }));
 const editDislike = createAction(EDIT_DISLIKE, (postingId, nickname, is_post_like, _like) => ({ postingId, nickname, is_post_like, _like }));
-const deletePost = createAction(DELETE_POST, (postingId) => ({postingId}));
-const myPost = createAction(MY_POST, (post) => ({post}));
-const editPost = createAction(EDIT_POST, (contents) => ({contents}));
+const deletePost = createAction(DELETE_POST, (postingId) => ({ postingId }));
+const myPost = createAction(MY_POST, (post) => ({ post }));
+const editPost = createAction(EDIT_POST, (contents) => ({ contents }));
+const searchTag = createAction(SEARCH_TAG, (tag_list) => ({ tag_list }));
 
 
 //middleware actions
@@ -79,7 +82,7 @@ const getLikePostTodayDB = () => {
     }
 }
 
-const addPostDB = (title, contents, previewUrlList, nickname, hashArr) => {
+const addPostDB = (title, contents, previewUrlList, nickname, hashTagList) => {
     return async function (dispatch, getState, { history }) {
         const token = sessionStorage.getItem('token');
 
@@ -88,7 +91,7 @@ const addPostDB = (title, contents, previewUrlList, nickname, hashArr) => {
             'content': contents,
             'imageFiles': previewUrlList,
             'nickname': nickname,
-            'tag': hashArr,
+            'tag': hashTagList,
         }, {
             headers: {
                 "Authorization": `${token}`
@@ -118,15 +121,15 @@ const detailPostDB = (postingId) => {
 }
 
 const deletePostDB = (nickname, postingid) => {
-    return async function (dispatch, getState, {history}) {
+    return async function (dispatch, getState, { history }) {
         const token = sessionStorage.getItem('token');
-        console.log(nickname,postingid)
+        console.log(nickname, postingid)
         await apis.delete(`/api/posting/${postingid}`,
-        {
-            headers: {
-                "Authorization": `${token}`
+            {
+                headers: {
+                    "Authorization": `${token}`
+                }
             }
-        }
         ).then(function (res) {
             dispatch(deletePost(postingid))
             history.push('/')
@@ -161,7 +164,6 @@ const editLikeDB = (postingId, nickname, is_post_like) => {
 const editDislikeDB = (postingId, nickname, is_post_like) => {
     return function (dispatch, getState, { history }) {
         const token = sessionStorage.getItem('token');
-        // console.log(postingId, nickname, is_post_like)
         apis.delete('/api/unlike',
             {
                 data: { "nickname": nickname, "postingId": postingId },
@@ -194,29 +196,41 @@ const myPostDB = (nickname) => {
 }
 
 const editPostDB = (contents, postingId) => {
-    return async function (dispatch, getState, {history}) {
+    return async function (dispatch, getState, { history }) {
         const token = sessionStorage.getItem('token');
         console.log(contents)
         await apis.put(`/api/posting/${postingId}`,
-        {
-            nickname : contents.nickname,
-            title : contents.title,
-            content : contents.contents,
-        },
-        {
-            headers: {
-                "Authorization": `${token}`
-            }
-        }
-        ).then((res) => {
-                console.log("수정성공",res)
-                dispatch(editPost(contents))
-                history.push( "/" )
+            {
+                nickname: contents.nickname,
+                title: contents.title,
+                content: contents.contents,
+            },
+            {
+                headers: {
+                    "Authorization": `${token}`
                 }
-            )
+            }
+        ).then((res) => {
+            console.log("수정성공", res)
+            dispatch(editPost(contents))
+            history.push("/")
+        })
             .catch((err) => {
                 console.log(err)
                 window.alert("수정 실패")
+            })
+    }
+}
+
+const searchTagDB = (tag) => {
+    return async function (dispatch, getState, { history }) {
+        await apis.get(`/api/posting/tag/${tag}`)
+            .then((res) => {
+                console.log(res)
+                dispatch(searchTag(res.data));
+            })
+            .catch((err) => {
+                console.log(err)
             })
     }
 }
@@ -242,8 +256,11 @@ export default handleActions(
             console.log(action.payload._like)
             draft.list2.like -= 1;
         }),
-        [EDIT_POST]: (state,action) => produce(state, (draft) => {
+        [EDIT_POST]: (state, action) => produce(state, (draft) => {
             console.log("수정합니다")
+        }),
+        [SEARCH_TAG]: (state, action) => produce(state, (draft) => {
+            draft.tag_list = action.payload.tag_list;
         })
     },
     initialState
@@ -270,6 +287,8 @@ const actionCreators = {
     myPostDB,
     editPost,
     editPostDB,
+    searchTag,
+    searchTagDB,
 };
 
 export { actionCreators }

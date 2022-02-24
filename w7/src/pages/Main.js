@@ -14,6 +14,10 @@ function Main(props) {
 
     React.useEffect(() => {
         dispatch(postActions.getLikePostWeekDB());
+    }, [post_list.length])
+
+    React.useEffect(() => {
+        dispatch(postActions.detailPostDB());
     }, [])
 
     const trendingPost = () => {

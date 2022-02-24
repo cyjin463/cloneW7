@@ -6,6 +6,8 @@ import TextAreaAutoResize from "react-textarea-autosize";
 
 import { useDispatch, useSelector } from 'react-redux';
 import { actionCreators as postActions } from '../redux/modules/post';
+import useInput from '../shared/useInput';
+import HashTag from '../elements/HashTag';
 
 // 여기 css를 수정해서 코드 하이라이팅 커스텀 가능
 import 'prismjs/themes/prism.css';
@@ -24,14 +26,12 @@ export default function PostAdd(props) {
     const editorRef = React.createRef();
     const [contents, setContents] = React.useState("");
     const [title, setTitle] = React.useState("");
-    const [hashtag, setHashtag] = React.useState("");
-    const [hashArr, setHashArr] = React.useState([]);
     const [previewUrlList, setPreviewUrlList] = React.useState([]);
     const token = sessionStorage.getItem("token");
 
     const post_list = useSelector(state => state.post.list2)
-    console.log(post_list.content)
-	const postingId = props.match.params.id
+    // console.log(post_list.content)
+    const postingId = props.match.params.id
     const is_edit = postingId ? true : false
 
     const user_info = useSelector(state => state.user.userInfo)
@@ -40,11 +40,11 @@ export default function PostAdd(props) {
 
     const editPost = () => {
         const _contents = {
-            nickname : nickname,
-            title : title,
-            content : contents,
+            nickname: nickname,
+            title: title,
+            content: contents,
         }
-        dispatch(postActions.editPostDB(_contents,postingId))
+        dispatch(postActions.editPostDB(_contents, postingId))
     }
 
 
@@ -96,55 +96,82 @@ export default function PostAdd(props) {
             return;
         }
 
-        dispatch(postActions.addPostDB(title, contents, previewUrlList, user_info.nickname, hashArr))
+        dispatch(postActions.addPostDB(title, contents, previewUrlList, user_info.nickname, hashTagList))
         editorRef.current.value = "";
     }
+
+    // const [value, onChangeValue, setValue] = React.useInput('');
+    const [value, onChangeValue, setValue] = useInput('');
+
+    const [hashTagList, setHashTagList] = React.useState([]);
+
+    const onEnter = (e) => {
+        if (e.key === 'Enter') {
+            if (hashTagList.indexOf(value) < 0) {
+                setHashTagList([...hashTagList, value]);
+            }
+            setValue('');
+        }
+    };
+
+    const removeHashTag = (e) => {
+        const idx = hashTagList.indexOf(e.target.innerHTML);
+        hashTagList.splice(idx, 1);
+        setHashTagList([...hashTagList]);
+    };
 
 
     return (
         <div style={{ backgroundColor: "black" }}>
             {is_edit
-        ?   <div style={{
-                paddingTop: "2rem",
-                paddingLeft: "2rem",
-                paddingRight: "2rem",
-            }}>
-                <TextAreaAutoResize
-                    defaultValue={post_list.title}
-                    placeholder="제목을 입력해주세요."
-                    onChange={changeTitle}
-                    style={{
-                        padding: "0px",
-                        fontSize: "2.75rem",
-                        width: "100%",
-                        resize: "none",
-                        lineHeight: "1.5",
-                        outline: "none",
-                        border: "none",
-                        fontWeight: "bold",
-                        overflow: "hidden",
-                        backgroundColor: "black",
-                        color: "#fff"
-                    }}
-                />
-                <TagBox>
-                    <div className="HashWrapOuter">
-
-                    </div>
-                    <TagInputBox
-                    type="text"
-                    defaultValue={post_list.tag}
-                    placeholder="태그를 입력해주세요"
+                ? <div style={{
+                    paddingTop: "2rem",
+                    paddingLeft: "2rem",
+                    paddingRight: "2rem",
+                }}>
+                    <TextAreaAutoResize
+                        defaultValue={post_list.title}
+                        placeholder="제목을 입력해주세요."
+                        onChange={changeTitle}
+                        style={{
+                            padding: "0px",
+                            fontSize: "2.75rem",
+                            width: "100%",
+                            resize: "none",
+                            lineHeight: "1.5",
+                            outline: "none",
+                            border: "none",
+                            fontWeight: "bold",
+                            overflow: "hidden",
+                            backgroundColor: "black",
+                            color: "#fff"
+                        }}
                     />
-                </TagBox>
+                    <TagBox>
+                        {hashTagList.map((h, idx) => {
+                            return (
+                                <HashTag key={idx} idx={idx} _onClick={removeHashTag}>
+                                    {h}
+                                </HashTag>
+                            );
+                        })}
+                        <TagInputBox
+                            type="text"
+                            onKeyPress={onEnter}
+                            placeholder="태그를 입력하세요"
+                            onChange={onChangeValue}
+                            value={value || ''}
+                            onClick={removeHashTag}
+                        />
+                    </TagBox>
 
-                <TitleFooter />
-            </div>
-            :       <div style={{
-                        paddingTop: "2rem",
-                        paddingLeft: "2rem",
-                        paddingRight: "2rem",
-                    }}>
+                    <TitleFooter />
+                </div>
+                : <div style={{
+                    paddingTop: "2rem",
+                    paddingLeft: "2rem",
+                    paddingRight: "2rem",
+                }}>
                     <TextAreaAutoResize
                         placeholder="제목을 입력해주세요."
                         onChange={changeTitle}
@@ -163,13 +190,20 @@ export default function PostAdd(props) {
                         }}
                     />
                     <TagBox>
-                        <div className="HashWrapOuter">
-
-                        </div>
+                        {hashTagList.map((h, idx) => {
+                            return (
+                                <HashTag key={idx} idx={idx} _onClick={removeHashTag}>
+                                    {h}
+                                </HashTag>
+                            );
+                        })}
                         <TagInputBox
-                        type="text"
-                        defaultValue={hashtag}
-                        placeholder="태그를 입력해주세요"
+                            type="text"
+                            onKeyPress={onEnter}
+                            placeholder="태그를 입력하세요"
+                            onChange={onChangeValue}
+                            value={value || ''}
+                            onClick={removeHashTag}
                         />
                     </TagBox>
 
@@ -183,40 +217,40 @@ export default function PostAdd(props) {
                 paddingRight: "2rem",
             }}>
                 {is_edit
-                ?
-                <Editor
-                    height="78vh"
-                    previewStyle="vertical"
-                    initialEditType="markdown"
-                    initialValue={(post_list.content) = "null" ? '' : `${post_list.content}`}
-                    plugins={[colorSyntax, [codeSyntaxHighlight, { highlighter: Prism }]]}
-                    onChange={() => {
-                        const innerTxt =  editorRef.current.getInstance().getMarkdown();
-                        setContents(innerTxt);
-                    }}
-                    style={{ color: "#ABABAB" }
-                    }
-                    ref={editorRef}
-                    theme='dark'
-                />
-                :
-                <Editor
-                    height="78vh"
-                    previewStyle="vertical"
-                    initialEditType="markdown"
-                    plugins={[colorSyntax, [codeSyntaxHighlight, { highlighter: Prism }]]}
-                    onChange={() => {
-                        const innerTxt =  editorRef.current.getInstance().getMarkdown();
-                        setContents(innerTxt);
-                    }}
-                    style={{ color: "#ABABAB" }
-                    }
-                    ref={editorRef}
-                    theme='dark'
-                />
+                    ?
+                    <Editor
+                        height="78vh"
+                        previewStyle="vertical"
+                        initialEditType="markdown"
+                        // initialValue={(post_list.content) = "null" ? '' : `${post_list.content}`}
+                        plugins={[colorSyntax, [codeSyntaxHighlight, { highlighter: Prism }]]}
+                        onChange={() => {
+                            const innerTxt = editorRef.current.getInstance().getMarkdown();
+                            setContents(innerTxt);
+                        }}
+                        style={{ color: "#ABABAB" }
+                        }
+                        ref={editorRef}
+                        theme='dark'
+                    />
+                    :
+                    <Editor
+                        height="78vh"
+                        previewStyle="vertical"
+                        initialEditType="markdown"
+                        plugins={[colorSyntax, [codeSyntaxHighlight, { highlighter: Prism }]]}
+                        onChange={() => {
+                            const innerTxt = editorRef.current.getInstance().getMarkdown();
+                            setContents(innerTxt);
+                        }}
+                        style={{ color: "#ABABAB" }
+                        }
+                        ref={editorRef}
+                        theme='dark'
+                    />
 
-            }
-            </div> 
+                }
+            </div>
 
             <WriteFooterOuter>
                 <WriteFooterInner>
@@ -232,15 +266,15 @@ export default function PostAdd(props) {
                     </ExitBtn>
                     <WriteSaveOuter>
                         <TemporaryStorage>임시저장</TemporaryStorage>
-                        {is_edit? 
-                        <SaveBtn
-                        onClick={editPost}
-                    >수정하기</SaveBtn>
-                    :
-                    <SaveBtn
-                    onClick={postWrite}
-                    >출간하기</SaveBtn>
-                    }
+                        {is_edit ?
+                            <SaveBtn
+                                onClick={editPost}
+                            >수정하기</SaveBtn>
+                            :
+                            <SaveBtn
+                                onClick={postWrite}
+                            >출간하기</SaveBtn>
+                        }
                     </WriteSaveOuter>
                 </WriteFooterInner>
             </WriteFooterOuter>

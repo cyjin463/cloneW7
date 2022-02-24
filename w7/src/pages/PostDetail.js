@@ -17,11 +17,11 @@ const PostDetail = (props) => {
     // console.log(post_id)
 
     const post_list = useSelector(state => state.post.list2)
-    // console.log('post_list', post_list)
+    console.log('post_list', post_list)
 
     const user_info = useSelector(state => state.user.userInfo)
     // console.log(user_info)
-    const is_post_like = user_info.userLikes.includes(Number(post_id))
+    const is_post_like = user_info.userLikes?.includes(Number(post_id))
 
     const comment_list = useSelector(state => state.comment.list)
 
@@ -31,13 +31,11 @@ const PostDetail = (props) => {
 
     const nickname = post_list.nickname
 
-    const [isLike, setIsLike] = React.useState(false);
-
-
     useEffect(() => {
         console.log("ehlsk")
 
         dispatch(postActions.detailPostDB(post_id))
+        dispatch(commentActions.getCommentDB())
     }, [comment_list.length]);
 
     const deleteAction = () => {
@@ -53,6 +51,7 @@ const PostDetail = (props) => {
         }
     }
 
+
     return (
         <>
             <Grid>
@@ -61,48 +60,50 @@ const PostDetail = (props) => {
                         <div style={{ width: "760", height: "70", marginBottom: "32px" }}>
                             <h1 style={{ lineHeight: "1.5", fontWeight: "800", fontSize: "3rem", color: "#ececec" }}>{post_list.title}</h1>
                         </div>
-                        { writer === login_user ?
-                        <div style={{display: "flex",
-                                    WebkitBoxPack: "end",
-                                    justifyContent: "flex-end"}}>
-                                        <button style={{
-                                                padding: "0px",
-                                                outline: "none",
-                                                border: "none",
-                                                background: "none",
-                                                fontSize: "inherit",
-                                                cursor: "pointer",
-                                                color: "#acacac",
-                                        }}>통계</button>
+                        {writer === login_user ?
+                            <div style={{
+                                display: "flex",
+                                WebkitBoxPack: "end",
+                                justifyContent: "flex-end"
+                            }}>
+                                <button style={{
+                                    padding: "0px",
+                                    outline: "none",
+                                    border: "none",
+                                    background: "none",
+                                    fontSize: "inherit",
+                                    cursor: "pointer",
+                                    color: "#acacac",
+                                }}>통계</button>
 
-                                        <button style={{
-                                                padding: "0px",
-                                                outline: "none",
-                                                border: "none",
-                                                background: "none",
-                                                fontSize: "inherit",
-                                                cursor: "pointer",
-                                                color: "#acacac",
-                                                marginLeft: "0.5rem",
-                                                }}
-                                                onClick={() => {
-                                                    history.push(`/write/${post_id}`)
-                                                }}
-                                        >수정</button>
+                                <button style={{
+                                    padding: "0px",
+                                    outline: "none",
+                                    border: "none",
+                                    background: "none",
+                                    fontSize: "inherit",
+                                    cursor: "pointer",
+                                    color: "#acacac",
+                                    marginLeft: "0.5rem",
+                                }}
+                                    onClick={() => {
+                                        history.push(`/write/${post_id}`)
+                                    }}
+                                >수정</button>
 
-                                        <button style={{
-                                                padding: "0px",
-                                                outline: "none",
-                                                border: "none",
-                                                background: "none",
-                                                fontSize: "inherit",
-                                                cursor: "pointer",
-                                                color: "#acacac",
-                                                marginLeft: "0.5rem",
-                                                }}
-                                                onClick={deleteAction}
-                                        >삭제</button>
-                        </div> : null
+                                <button style={{
+                                    padding: "0px",
+                                    outline: "none",
+                                    border: "none",
+                                    background: "none",
+                                    fontSize: "inherit",
+                                    cursor: "pointer",
+                                    color: "#acacac",
+                                    marginLeft: "0.5rem",
+                                }}
+                                    onClick={deleteAction}
+                                >삭제</button>
+                            </div> : null
                         }
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                             <div style={{ fontSize: "1rem", color: "#ececec" }}>
@@ -187,7 +188,7 @@ const PostDetail = (props) => {
                             {post_list.tags.map((t, idx) => {
                                 // console.log(t)
                                 return (
-                                    <a
+                                    <div as="a"
                                         key={idx}
                                         style={{
                                             backgroundColor: "#252525",
@@ -196,10 +197,13 @@ const PostDetail = (props) => {
                                             padding: "5px",
                                             fontWeight: "400",
                                             marginRight: "0.8rem",
+                                            display: "inline-block"
                                         }}
-                                        variant="primary">
+                                        variant="primary"
+                                        onClick={() => { history.push(`/posting/tags/${t}`) }}
+                                    >
                                         {t}
-                                    </a>
+                                    </div>
                                 )
                             })}
                         </div>
