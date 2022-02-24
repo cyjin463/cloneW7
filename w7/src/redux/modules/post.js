@@ -73,7 +73,7 @@ const getLikePostWeekDB = () => {
 
 const getLikePostTodayDB = () => {
     return async function (dispatch, getState, { history }) {
-        await apis.get('http://yuseon.shop/api/posting/today').then((response) => {
+        await apis.get('http://yuseon.shop/api/posting/likes/today').then((response) => {
             console.log((response.data.articles))
             dispatch(getPost(response.data.articles))
         }).catch((err) => {
@@ -108,7 +108,6 @@ const addPostDB = (title, contents, previewUrlList, nickname, hashTagList) => {
 
 const detailPostDB = (postingId) => {
     return function (dispatch, getState, { history }) {
-        // console.log(postingId)
         axios
             .get(`http://yuseon.shop/api/posting/${postingId}`)
             .then((res) => {

@@ -23,7 +23,8 @@ const PostDetail = (props) => {
     // console.log(user_info)
     const is_post_like = user_info.userLikes?.includes(Number(post_id))
 
-    const comment_list = useSelector(state => state.comment.list)
+    const comment_list = post_list.commentList;
+    console.log(comment_list)
 
     const login_user = user_info.username.split('@')[0]
 
@@ -32,11 +33,8 @@ const PostDetail = (props) => {
     const nickname = post_list.nickname
 
     useEffect(() => {
-        console.log("ehlsk")
-
         dispatch(postActions.detailPostDB(post_id))
-        dispatch(commentActions.getCommentDB())
-    }, [comment_list.length]);
+    }, [dispatch]);
 
     const deleteAction = () => {
         console.log("postList화면에서", post_id, nickname, "의 삭제버튼을 눌렀어요.");

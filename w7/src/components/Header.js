@@ -17,7 +17,7 @@ const Header = (props) => {
 	const is_login = useSelector(state => state.user.isLogin);
 
 	const user_info = useSelector(state => state.user.userInfo);
-	console.log(user_info)
+	// console.log(user_info)
 
 	// const H = 0
 	// const Action = H==1 ? H = 0 : H = 1
