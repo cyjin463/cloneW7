@@ -16,9 +16,9 @@ function MainRecent(props) {
         dispatch(postActions.getDatePostDB());
     }, [post_list.length])
 
-    // React.useEffect(() => {
-    //     dispatch(postActions.detailPostDB(138));
-    // }, [])
+    React.useEffect(() => {
+        dispatch(postActions.detailPostDB(138));
+    }, [])
 
     if (!post_list) {
         return (

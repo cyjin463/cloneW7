@@ -168,7 +168,6 @@ function SignUp(props) {
 }
 
 const SignupContainer = styled.div`
-    border: 2px solid red;
     margin: 50px auto;
     width: 60%;
     text-align: left;
@@ -177,6 +176,7 @@ const SignupContainer = styled.div`
     justify-content: center;
     color: #fff;
     box-sizing: border-box;
+    min-height: 100%;
 `
 
 const SignupLeft = styled.div`
