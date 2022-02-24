@@ -156,7 +156,7 @@ const PostDetail = (props) => {
                                             <svg width="0.75rem" height="0.75rem" viewBox="0 0 24 24" style={{ marginRight: "0.75rem", fontFamily: "inherit" }}>
                                                 <path fill="currentColor" d="M18 1l-6 4-6-4-6 5v7l12 10 12-10v-7z"></path>
                                             </svg>
-                                            <span>{post_list.like}</span>
+                                            <span>{post_list2.like}</span>
                                         </button>
                                     </div>
                                     :

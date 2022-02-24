@@ -143,7 +143,6 @@ const deletePostDB = (nickname, postingid) => {
 const editLikeDB = (postingId, nickname, is_post_like) => {
     return function (dispatch, getState, { history }) {
         const token = sessionStorage.getItem('token');
-        // console.log(postingId, nickname, is_post_like)
         apis.post('/api/like', { "nickname": nickname, "postingId": postingId },
             {
                 headers: {
@@ -187,11 +186,11 @@ const myPostDB = (nickname) => {
         console.log(nickname)
         apis
             .get(`http://yuseon.shop/api/mypage/${nickname}`,
-            {
-                headers: {
-                    "Authorization": `${token}`
-                }
-            })
+                {
+                    headers: {
+                        "Authorization": `${token}`
+                    }
+                })
             .then((res) => {
                 console.log(res.data)
                 dispatch(myPost(res.data))
