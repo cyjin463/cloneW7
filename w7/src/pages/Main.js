@@ -22,9 +22,9 @@ function Main(props) {
         dispatch(postActions.detailPostDB(249));
     }, [])
 
-    // React.useEffect(() => {
-    //     dispatch(postActions.detailPostDB());
-    // }, [])
+    React.useEffect(() => {
+        dispatch(postActions.detailPostDB());
+    }, [])
 
     const trendingPost = () => {
         dispatch(postActions.getLikePostWeekDB());

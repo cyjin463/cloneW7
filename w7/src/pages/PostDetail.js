@@ -6,6 +6,17 @@ import { Container, Button } from "react-bootstrap"
 import { useDispatch, useSelector } from 'react-redux';
 import { actionCreators as postActions } from "../redux/modules/post"
 import { actionCreators as commentActions } from '../redux/modules/comment';
+
+import Prism from 'prismjs';
+// 여기 css를 수정해서 코드 하이라이팅 커스텀 가능
+import 'prismjs/themes/prism.css';
+
+import '@toast-ui/editor/dist/toastui-editor.css';
+import { Viewer } from '@toast-ui/react-editor';
+
+import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css';
+import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight';
+
 import ReactMarkdown from 'react-markdown';
 import CommentList from '../components/CommentList';
 import CommentWrite from '../components/CommentWrite';
@@ -25,7 +36,6 @@ const PostDetail = (props) => {
 
     const comment_list = post_list.commentList;
     console.log(comment_list)
-    const comment_list = useSelector(state => state.comment.list)
 
     const login_user = user_info.username.split('@')[0]
 
@@ -37,9 +47,6 @@ const PostDetail = (props) => {
         dispatch(postActions.detailPostDB(post_id))
     }, [dispatch]);
 
-    React.useEffect(() => {
-        dispatch(commentActions.getCommentDB())
-    }, [comment_list.length]);
 
     const deleteAction = () => {
         console.log("postList화면에서", post_id, nickname, "의 삭제버튼을 눌렀어요.");
@@ -53,7 +60,6 @@ const PostDetail = (props) => {
             dispatch(postActions.editLikeDB(post_list.postingId, user_info.nickname, is_post_like));
         }
     }
-
 
     return (
         <>
@@ -210,19 +216,19 @@ const PostDetail = (props) => {
                                 )
                             })}
                         </div>
-                        <div style={{maxHeight: "100vh",
-                                    maxWidth: "100%",
-                                    width: "auto",
-                                    margin: "2rem auto 0px",
-                                    height: "auto",
-                                    objectFit: "contain",
-                                    display: "block"
-                                    }}>
-                            <img src={post_list.thumnail} />
-                        </div>
+                        <div style={{
+                            maxHeight: "100vh",
+                            maxWidth: "100%",
+                            width: "auto",
+                            margin: "2rem auto 0px",
+                            height: "auto",
+                            objectFit: "contain",
+                            display: "block"
+                        }}>
+                            <img style={{ maxHeight: "100vh", maxWidth: "100%", width: "auto", margin: "2rem auto 0px", height: "auto", objectFit: "contain", display: "block" }} src={post_list.thumnail} />                        </div>
                     </div>
 
-                    <div style={{width:"768px", margin:"5rem auto 0px"}}>
+                    <div style={{ width: "768px", margin: "5rem auto 0px" }}>
                         <div style={{
                             color: "#ECECEC", fontSize: "1.125rem", lineHeight: "1.7", letterSpacing: "-0.004em", overflowWrap: "break-word",
                             workBreack: "keep-all"
@@ -240,11 +246,12 @@ const PostDetail = (props) => {
                                 }} />
                         </div>
                         <div style={{ display: "flex", flexDirection: "column", WebkitBoxPack: "center", justifyContent: "center", marginLeft: "1rem" }}>
-                            <div style={{fontSize: "1.5rem",
-                                            lineHeight: "1.5",
-                                            fontWeight: "bold",
-                                            color: "#ececec"
-                                            }}>
+                            <div style={{
+                                fontSize: "1.5rem",
+                                lineHeight: "1.5",
+                                fontWeight: "bold",
+                                color: "#ececec"
+                            }}>
                                 {post_list.nickname}
                             </div>
                         </div>

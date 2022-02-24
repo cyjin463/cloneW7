@@ -16,7 +16,7 @@ import SearchTagPage from '../pages/SearchTagPage';
 
 function App() {
   return (
-    <div className="App" style={{ backgroundColor: "#121212" }}>
+    <div className="App" style={{ backgroundColor: "#121212", minHeight: "100%", position: "relative" }}>
       <Header />
       <ConnectedRouter history={history}>
         <Route path="/login" exact component={Login} />
