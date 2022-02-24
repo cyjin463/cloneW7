@@ -185,67 +185,69 @@ function Comment(props) {
             </>
         )
     } else {
-        <>
-            <CommentContentsContainer>
-                <CommentUserBox>
-                    <div className="profile" style={{ display: "flex", alignItems: "center" }}>
-                        <a href="#" style={{ textDecoration: "none" }}>
-                            <img
-                                src={profileImage}
-                                alt="comment-user-thumbnail"
-                                style={{
-                                    width: "3.375rem",
-                                    height: "3.375rem",
-                                    display: "block",
-                                    borderRadius: "50%",
-                                    objectFit: "cover",
-                                    cursor: "pointer",
-                                }}
-                            />
-                        </a>
-                        <div className="comment-info" style={{ marginLeft: "1rem", lineHeight: "1" }}>
-                            <div
-                                className="username"
-                                style={{
-                                    fontSize: "1rem",
-                                    fontWeight: "bold",
-                                    color: "#ECECEC",
-                                    textDecoration: "none"
-                                }}>
-                                <span href={`/@${nickname}`} style={{ textDecoration: "none" }}>{nickname}</span>
-                            </div>
-                            <div
-                                className="date"
-                                style={{ marginTop: "0.5rem", color: "#ACACAC", fontSize: "0.875rem" }}
-                            >
-                                {createdAtComment}
+        return (
+            <>
+                <CommentContentsContainer>
+                    <CommentUserBox>
+                        <div className="profile" style={{ display: "flex", alignItems: "center" }}>
+                            <a href="#" style={{ textDecoration: "none" }}>
+                                <img
+                                    src={profileImage}
+                                    alt="comment-user-thumbnail"
+                                    style={{
+                                        width: "3.375rem",
+                                        height: "3.375rem",
+                                        display: "block",
+                                        borderRadius: "50%",
+                                        objectFit: "cover",
+                                        cursor: "pointer",
+                                    }}
+                                />
+                            </a>
+                            <div className="comment-info" style={{ marginLeft: "1rem", lineHeight: "1" }}>
+                                <div
+                                    className="username"
+                                    style={{
+                                        fontSize: "1rem",
+                                        fontWeight: "bold",
+                                        color: "#ECECEC",
+                                        textDecoration: "none"
+                                    }}>
+                                    <span href={`/@${nickname}`} style={{ textDecoration: "none" }}>{nickname}</span>
+                                </div>
+                                <div
+                                    className="date"
+                                    style={{ marginTop: "0.5rem", color: "#ACACAC", fontSize: "0.875rem" }}
+                                >
+                                    {createdAtComment}
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                </CommentUserBox>
-                <CommentContents>
-                    <CommentContentsOuter>
-                        <CommentContentsInner>
-                            <div>
-                                <p>{comment}</p>
-                            </div>
-                        </CommentContentsInner>
-                    </CommentContentsOuter>
-                </CommentContents>
-            </CommentContentsContainer>
-            <CommentFooter>
-                <CommentFooterInner>
-                    <svg width="12" height="12" fill="none" viewBox="0 0 12 12" style={{ marginRight: "0.5rem" }}>
-                        <path fill="currentColor" d="M5.5 2.5h1v3h3v1h-3v3h-1v-3h-3v-1h3v-3z">
-                        </path>
-                        <path fill="currentColor" fillRule="evenodd" d="M1 0a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1H1zm10 1H1v10h10V1z" clipRule="evenodd">
-                        </path>
-                    </svg>
-                    <span>답글 달기</span>
-                </CommentFooterInner>
-            </CommentFooter>
-        </>
+                    </CommentUserBox>
+                    <CommentContents>
+                        <CommentContentsOuter>
+                            <CommentContentsInner>
+                                <div>
+                                    <p>{comment}</p>
+                                </div>
+                            </CommentContentsInner>
+                        </CommentContentsOuter>
+                    </CommentContents>
+                </CommentContentsContainer>
+                <CommentFooter>
+                    <CommentFooterInner>
+                        <svg width="12" height="12" fill="none" viewBox="0 0 12 12" style={{ marginRight: "0.5rem" }}>
+                            <path fill="currentColor" d="M5.5 2.5h1v3h3v1h-3v3h-1v-3h-3v-1h3v-3z">
+                            </path>
+                            <path fill="currentColor" fillRule="evenodd" d="M1 0a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1H1zm10 1H1v10h10V1z" clipRule="evenodd">
+                            </path>
+                        </svg>
+                        <span>답글 달기</span>
+                    </CommentFooterInner>
+                </CommentFooter>
+            </>
+        )
     }
 }
 

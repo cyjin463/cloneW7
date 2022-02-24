@@ -34,9 +34,6 @@ const PostDetail = (props) => {
     // console.log(user_info)
     const is_post_like = user_info.userLikes?.includes(Number(post_id))
 
-    const comment_list = post_list.commentList;
-    console.log(comment_list)
-
     const login_user = user_info.username.split('@')[0]
 
     const writer = post_list.username.split('@')[0]
@@ -269,7 +266,10 @@ const PostDetail = (props) => {
                 </h4>
                 <div style={{ color: "#ECECEC" }}>
                     <CommentWrite postId={post_id} />
-                    <CommentList postId={post_id} comment_list={comment_list} />
+                    {post_list &&
+                        <CommentList postId={post_id} post_list={post_list} />
+                    }
+
                 </div>
             </CommentContainer>
             <div style={{
