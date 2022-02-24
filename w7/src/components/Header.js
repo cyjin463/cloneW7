@@ -19,9 +19,6 @@ const Header = (props) => {
 
 	const user_info = useSelector(state => state.user.userInfo);
 
-	const post_id = useSelector(state => state.post.list2.postingId)
-	console.log(post_id)
-
 	const [view, setview] = React.useState(false);
 
 	const X = () => {

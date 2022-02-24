@@ -25,10 +25,13 @@ const PostDetail = (props) => {
     const dispatch = useDispatch()
 
     const post_id = props.match.params.id
-    // console.log(post_id)
+    console.log(post_id)
 
-    const post_list = useSelector(state => state.post.list2)
+    const post_list = useSelector(state => state.post.list)
     console.log('post_list', post_list)
+
+    const post_find = post_list.find(p => p.postingId == post_id)
+	console.log('post_find', post_find)
 
     const user_info = useSelector(state => state.user.userInfo)
     // console.log(user_info)
@@ -36,13 +39,14 @@ const PostDetail = (props) => {
 
     const login_user = user_info.username.split('@')[0]
 
-    const writer = post_list.username.split('@')[0]
+    const writer = post_find.nickname
+    console.log(writer)
 
     const nickname = post_list.nickname
 
-    useEffect(() => {
+    React.useEffect(() => {
         dispatch(postActions.detailPostDB(post_id))
-    }, [dispatch]);
+    }, []);
 
 
     const deleteAction = () => {
@@ -52,9 +56,9 @@ const PostDetail = (props) => {
 
     const handleLike = () => {
         if (is_post_like) {
-            dispatch(postActions.editDislikeDB(post_list.postingId, user_info.nickname, is_post_like))
+            dispatch(postActions.editDislikeDB(post_find.postingId, user_info.nickname, is_post_like))
         } else {
-            dispatch(postActions.editLikeDB(post_list.postingId, user_info.nickname, is_post_like));
+            dispatch(postActions.editLikeDB(post_find.postingId, user_info.nickname, is_post_like));
         }
     }
 
@@ -65,7 +69,7 @@ const PostDetail = (props) => {
                 <Grid width="760px" height="100%">
                     <div style={{ width: "770", height: "370", marginTop: "3rem" }}>
                         <div style={{ width: "760", height: "70", marginBottom: "32px" }}>
-                            <h1 style={{ lineHeight: "1.5", fontWeight: "800", fontSize: "3rem", color: "#ececec" }}>{post_list.title}</h1>
+                            <h1 style={{ lineHeight: "1.5", fontWeight: "800", fontSize: "3rem", color: "#ececec" }}>{post_find.title}</h1>
                         </div>
                         {writer === login_user ?
                             <div style={{
@@ -114,9 +118,9 @@ const PostDetail = (props) => {
                         }
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                             <div style={{ fontSize: "1rem", color: "#ececec" }}>
-                                <span style={{ fontWeight: "400" }}><a>{post_list.nickname}</a></span>
+                                <span style={{ fontWeight: "400" }}>{post_find.nickname}</span>
                                 <span> . </span>
-                                <span>{post_list.dayBefore}</span>
+                                <span>{post_find.dayBefore}</span>
                             </div>
                             {
                                 is_post_like
@@ -185,14 +189,14 @@ const PostDetail = (props) => {
                                             <svg width="0.75rem" height="0.75rem" viewBox="0 0 24 24" style={{ marginRight: "0.75rem", fontFamily: "inherit" }}>
                                                 <path fill="currentColor" d="M18 1l-6 4-6-4-6 5v7l12 10 12-10v-7z"></path>
                                             </svg>
-                                            <span>{post_list.like}</span>
+                                            <span>{post_find.like}</span>
                                         </button>
                                     </div>
                             }
 
                         </div>
                         <div style={{ width: "100%", marginTop: "15px" }}>
-                            {post_list.tags.map((t, idx) => {
+                            {post_find.tag.map((t, idx) => {
                                 // console.log(t)
                                 return (
                                     <div as="a"
@@ -242,7 +246,7 @@ const PostDetail = (props) => {
                                         objectFit: "contain",
                                         display: "block"
                                     }}
-                                        src={post_list.thumnail} />
+                                        src={post_find.thumnail} />
                         </div>
                     </div>
 
@@ -253,7 +257,7 @@ const PostDetail = (props) => {
                             margin: "3rem auto"
                         }}>
                             <ReactMarkdown>
-                                {post_list.content}
+                                {post_find.content}
                             </ReactMarkdown>
                         </div>
                     </div>
@@ -261,7 +265,7 @@ const PostDetail = (props) => {
                         <div style={{ color: "WenkitLink", cursor: "pointer", textDecoration: "underline" }}
                             onClick={() => { history.push(`/user/${nickname}`) }}
                         >
-                            <img src={post_list.profileImage}
+                            <img src={post_find.profileImage}
                                 style={{
                                     display: "block", width: "8rem", height: "8rem", borderRadius: "50%", objectFit: "cover", boxShadow: "rgb(0 0 0 / 6%) 0px 0px 4px 0px"
                                 }} />
@@ -273,7 +277,7 @@ const PostDetail = (props) => {
                                 fontWeight: "bold",
                                 color: "#ececec"
                             }}>
-                                {post_list.nickname}
+                                {post_find.nickname}
                             </div>
                         </div>
                     </div>
@@ -286,12 +290,12 @@ const PostDetail = (props) => {
                     fontWeight: "600",
                     marginBottom: "1rem"
                 }}>
-                    {post_list.commentCnt}개의 댓글
+                    {post_find.commentCnt}개의 댓글
                 </h4>
                 <div style={{ color: "#ECECEC" }}>
                     <CommentWrite postId={post_id} />
-                    {post_list &&
-                        <CommentList postId={post_id} post_list={post_list} />
+                    {post_find &&
+                        <CommentList postId={post_id} post_list={post_find} />
                     }
 
                 </div>
