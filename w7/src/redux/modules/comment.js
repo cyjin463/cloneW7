@@ -104,11 +104,9 @@ const editCommentDB = (nickname, newComment, commentId) => {
 export default handleActions({
     [GET_COMMENT]: (state, action) => produce(state, (draft) => {
         draft.list = action.payload.comment_list;
-        console.log(draft.list)
     }),
 
     [ADD_COMMENT]: (state, action) => produce(state, (draft) => {
-        console.log(action.payload)
         draft.list.push(action.payload);
     }),
 

@@ -12,6 +12,7 @@ import Main from '../pages/Main';
 import MainRecent from '../pages/MainRecent';
 import PostAdd from '../pages/PostAdd';
 import Mypage from "../pages/Mypage";
+import SearchTagPage from '../pages/SearchTagPage';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/write" exact component={PostAdd} />
         <Route path="/write/:id" exact component={PostAdd} />
         <Route path="/My/:nickname" exact component={Mypage} />
+        <Route path="/posting/tags/:tag" exact component={SearchTagPage} />
       </ConnectedRouter>
     </div>
   );
