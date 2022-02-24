@@ -2,6 +2,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { actionCreators as userActions } from '../redux/modules/user'
+import { actionCreators as postActions } from "../redux/modules/post"
 
 // import {logoutM} from "../redux/modules/user";
 
@@ -17,16 +18,20 @@ const Header = (props) => {
 	const is_login = useSelector(state => state.user.isLogin);
 
 	const user_info = useSelector(state => state.user.userInfo);
-	// console.log(user_info)
 
-	// const H = 0
-	// const Action = H==1 ? H = 0 : H = 1
+	const post_id = useSelector(state => state.post.list2.postingId)
+	console.log(post_id)
+
+	const [view, setview] = React.useState(false);
+
+	const X = () => {
+		setview(!view)
+	}
 
 
 	return (
 		<>
-			{is_login ?
-				<div style={{ height: "4rem" }}>
+			<div style={{ height: "4rem", margin:"0px 31px 0px 31px" }}>
 					<div style={{
 						height: "100%",
 						display: "flex",
@@ -75,181 +80,195 @@ const Header = (props) => {
 							</div>
 						</div>
 
-						<div style={{
-							display: "flex",
-							WebkitBoxAlign: "center",
-							alignItems: "center",
-							position: "relative",
-						}}>
-							<button style={{
-								background: "none",
-								border: "none",
-								cursor: "pointer",
-								borderRadius: "50%",
-								width: "2.5rem",
-								height: "2.5rem",
-								marginRight: "0.25rem",
-								color: "white",
-								position: "relative",
-								fontFamily: "inherit",
-							}}>
-								<div style={{
-									position: "absolute",
-									top: "50%",
-									left: "50%",
-									transform: "translate(-50%, -50%)",
-								}}>
-									<div style={{
-										transform: "scale(1) rotate(0deg)",
-										opacity: "1",
-										color: "#ececec",
-									}}>
-										<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-											<path fillRule="evenodd" clipRule="evenodd" d="M20.6144 14.6145C19.787 14.8653 18.9093 15.0001 18 15.0001C13.0294 15.0001 9 10.9707 9 6.00013C9 5.09088 9.13484 4.21311 9.3856 3.38574C5.69007 4.50583 3 7.93883 3 12.0001C3 16.9707 7.02944 21.0001 12 21.0001C16.0613 21.0001 19.4943 18.3101 20.6144 14.6145Z" fill="currentColor">
-											</path>
-										</svg>
-									</div>
-								</div>
-							</button>
-							<div style={{
-								display: "flex",
-								WebkitBoxAlign: "center",
-								alignItems: "center",
-								WebkitBoPack: "center",
-								justifyContent: "center",
-								background: "transparent",
-								border: "none",
-								width: "2.5rem",
-								height: "2.5rem",
-								outline: "none",
-								borderRadius: "50%",
-								color: "#ececec",
-								cursor: "pointer",
-								marginRight: "0.5rem",
-							}}>
-								<svg width="17" height="17" viewBox="0 0 17 17">
-									<path fillRule="evenodd" d="M13.66 7.36a6.3 6.3 0 1 1-12.598 0 6.3 6.3 0 0 1 12.598 0zm-1.73 5.772a7.36 7.36 0 1 1 1.201-1.201l3.636 3.635c.31.31.31.815 0 1.126l-.075.075a.796.796 0 0 1-1.126 0l-3.636-3.635z" clipRule="evenodd" fill="currentColor">
-									</path>
-								</svg>
-							</div>
-							<button style={{
-								height: "2rem",
-								paddingLeft: "1rem",
-								paddingRight: "1rem",
-								fontSize: "1rem",
-								borderRadius: "1rem",
-								outline: "none",
-								fontWeight: "bold",
-								wordBreak: "keep-all",
-								background: "#1e1e1e",
-								border: "1px solid #f1f3f5",
-								color: "#f1f3f5",
-								transition: "all 0.125s ease-in 0s",
-								cursor: "pointer",
-								marginRight: "1.25rem",
-							}}
-								onClick={() => { history.push('/write') }}
-							>
-								새 글 작성
-							</button>
-							<div>
-								<div style={{
-									cursor: "pointer",
-									display: "flex",
-									WebkitBoxAlign: "center",
-									alignItems: "center",
-								}}>
-									<img src={user_info.imageUrl} />
-									<svg style={{
-										fontSize: "1.5rem",
-										marginLeft: "0.25rem",
-										color: "#acacac",
-										transition: "all 0.125s ease-in 0s",
-										marginRight: "-0.4375rem",
-										stroke: "currentcolor",
-										fill: "currentcolor",
-										strokeWidth: "0",
-										height: "1em",
-										width: "1em",
-										overflow: "hidden",
-										cursor: "pointer",
-									}}
-										stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-										<path style={{ transformOrigin: "0px 0px" }} d="M7 10l5 5 5-5z">
-										</path>
-									</svg>
-								</div>
-							</div>
-							<div>
-								<div style={{
-									position: "absolute",
-									top: "100%",
-									marginTop: "1rem",
-									right: "0px",
-								}}>
-									<div style={{
-										position: "relative",
-										zIndex: "5",
-										width: "12rem",
-										background: "#1e1e1e",
-										boxShadow: "rgb(0 0 0 / 10%) 0px 0px 8px",
-									}}>
+
+
+							
 										<div style={{
-											color: "inherit",
-											textDecoration: "none",
-										}}>
+											display: "flex",
+											WebkitBoxAlign: "center",
+											alignItems: "center",
+											position: "relative",
+											}}>
+											<button style={{
+												background: "none",
+												border: "none",
+												cursor: "pointer",
+												borderRadius: "50%",
+												width: "2.5rem",
+												height: "2.5rem",
+												marginRight: "0.25rem",
+												color: "white",
+												position: "relative",
+												fontFamily: "inherit",
+											}}>
+												<div style={{
+													position: "absolute",
+													top: "50%",
+													left: "50%",
+													transform: "translate(-50%, -50%)",
+												}}>
+													<div style={{
+														transform: "scale(1) rotate(0deg)",
+														opacity: "1",
+														color: "#ececec",
+													}}>
+														<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+															<path fillRule="evenodd" clipRule="evenodd" d="M20.6144 14.6145C19.787 14.8653 18.9093 15.0001 18 15.0001C13.0294 15.0001 9 10.9707 9 6.00013C9 5.09088 9.13484 4.21311 9.3856 3.38574C5.69007 4.50583 3 7.93883 3 12.0001C3 16.9707 7.02944 21.0001 12 21.0001C16.0613 21.0001 19.4943 18.3101 20.6144 14.6145Z" fill="currentColor">
+															</path>
+														</svg>
+													</div>
+												</div>
+											</button>
 											<div style={{
+												display: "flex",
+												WebkitBoxAlign: "center",
+												alignItems: "center",
+												WebkitBoPack: "center",
+												justifyContent: "center",
+												background: "transparent",
+												border: "none",
+												width: "2.5rem",
+												height: "2.5rem",
+												outline: "none",
+												borderRadius: "50%",
+												color: "#ececec",
+												cursor: "pointer",
+												marginRight: "0.5rem",
+											}}>
+												<svg width="17" height="17" viewBox="0 0 17 17">
+													<path fillRule="evenodd" d="M13.66 7.36a6.3 6.3 0 1 1-12.598 0 6.3 6.3 0 0 1 12.598 0zm-1.73 5.772a7.36 7.36 0 1 1 1.201-1.201l3.636 3.635c.31.31.31.815 0 1.126l-.075.075a.796.796 0 0 1-1.126 0l-3.636-3.635z" clipRule="evenodd" fill="currentColor">
+													</path>
+												</svg>
+											</div>
+											{is_login ?
+											<button style={{
+												height: "2rem",
+												paddingLeft: "1rem",
+												paddingRight: "1rem",
+												fontSize: "1rem",
+												borderRadius: "1rem",
+												outline: "none",
+												fontWeight: "bold",
+												wordBreak: "keep-all",
+												background: "#1e1e1e",
+												border: "1px solid #f1f3f5",
+												color: "#f1f3f5",
+												transition: "all 0.125s ease-in 0s",
+												cursor: "pointer",
+												marginRight: "1.25rem",
+											}}
+												onClick={() => { history.push('/write') }}
+											>
+												새 글 작성
+											</button> 
+											:
+											<button style={{height: "2rem",
+															paddingLeft: "1rem",
+															paddingRight: "1rem",
+															fontSize: "1rem",
+															borderRadius: "1rem",
+															border: "none",
+															outline: "none",
+															fontWeight: "bold",
+															wordBreak: "keep-all",
+															background: "#f1f3f5",
+															color: "#121212",
+															transition: "all 0.125s ease-in 0s",
+															cursor: "pointer",
+															}}
+													onClick={()=>{history.push("/login")}}
+															>
+												로그인</button>}
+
+											{is_login ?
+											<div>
+												<div style={{
+													cursor: "pointer",
+													display: "flex",
+													WebkitBoxAlign: "center",
+													alignItems: "center",
+												}}
+												onClick={X}
+												>
+													<img style={{display: "block",
+																height: "2.5rem",
+																width: "2.5rem",
+																boxShadow: "rgb(0 0 0 / 9%) 0px 0px 8px",
+																borderRadius: "50%",
+																objectFit: "cover",
+																transition: "all 0.125s ease-in 0s"
+																}}
+																src={user_info.imgUrl}
+															/>
+													<svg style={{
+														fontSize: "1.5rem",
+														marginLeft: "0.25rem",
+														color: "#acacac",
+														transition: "all 0.125s ease-in 0s",
+														marginRight: "-0.4375rem",
+														stroke: "currentcolor",
+														fill: "currentcolor",
+														strokeWidth: "0",
+														height: "1em",
+														width: "1em",
+														overflow: "hidden",
+														cursor: "pointer",
+													}}
+														stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+														<path style={{ transformOrigin: "0px 0px" }} d="M7 10l5 5 5-5z">
+														</path>
+													</svg>
+												</div>
+											</div> : null }
+												
+									{ is_login && view===true ?
+										<div>
+											<div style={{
+												position: "absolute",
+												top: "100%",
+												marginTop: "1rem",
+												right: "0px",
+												}}>
+												<div style={{
+												position: "relative",
+												zIndex: "5",
+												width: "12rem",
+												background: "#1e1e1e",
+												boxShadow: "rgb(0 0 0 / 10%) 0px 0px 8px",
+												}}>
+												<div style={{
+													color: "inherit",
+													textDecoration: "none",
+													}}>
+													<div style={{
+															color: "#ececec",
+															padding: "0.75rem 1rem",
+															lineHeight: "1.5",
+															fontWeight: "500",
+															cursor: "pointer",
+															}}
+															onClick={() => { history.push(`/My/${user_info.nickname}`) }}>
+														내 벨로그
+													</div>
+												</div> 
+												<div style={{
 												color: "#ececec",
 												padding: "0.75rem 1rem",
 												lineHeight: "1.5",
 												fontWeight: "500",
 												cursor: "pointer",
-											}}
-												onClick={() => { history.push(`/My/${user_info.nickname}`) }}>
-												내 벨로그
-											</div>
-										</div>
-										<div style={{
-											color: "#ececec",
-											padding: "0.75rem 1rem",
-											lineHeight: "1.5",
-											fontWeight: "500",
-											cursor: "pointer",
-										}}
-											onClick={() => { dispatch(userActions.logOut()); history.replace('/') }}
-										>
+												}}
+												onClick={() => { dispatch(userActions.logOut()); history.replace('/') }}
+											>
 											로그아웃
 										</div>
 									</div>
 								</div>
-							</div>
-						</div>
+							</div>: null }
+						</div>	
 					</div>
 				</div>
-				:
-				<Navbar collapseOnSelect expand="lg" bg="#252525"  >
-					<Container>
-						<Navbar.Brand style={{ color: "#ececec" }} onClick={() => { history.push('/') }}>
-							rkskek
-						</Navbar.Brand>
-						<Navbar.Toggle aria-controls="responsive-navbar-nav" />
-						<Navbar.Collapse id="responsive-navbar-nav">
-							<Nav className="me-auto"></Nav>
-							<Nav>
-								<Nav.Link style={{ color: "#ececec" }} href="" onClick={() => { history.push('/user/signup') }}>
-									회원가입
-								</Nav.Link>
-								<Nav.Link
-									style={{ color: "#ececec" }}
-									eventKey={2}
-									href="" onClick={() => { history.push('/login') }}>
-									로그인
-								</Nav.Link>
-							</Nav>
-						</Navbar.Collapse>
-					</Container>
-				</Navbar>
-			}
+				
 		</>
 	)
 }
