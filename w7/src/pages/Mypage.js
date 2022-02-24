@@ -13,7 +13,7 @@ const Mypage = () => {
     console.log(nickname)
 
     React.useEffect(() => {
-        console.log("ehlsk")
+        console.log("Mypag보내기")
         dispatch(postActions.myPostDB(nickname))
     }, []);
 
@@ -298,16 +298,6 @@ const Mypage = () => {
                     </div>
                 </div>
             </div>
-
-
-
-
-
-
-
-
-
-
         </div>
     );
 };

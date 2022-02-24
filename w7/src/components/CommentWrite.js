@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import TextAreaAutoResize from "react-textarea-autosize";
+import { history } from '../redux/configureStore';
 
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,7 +25,8 @@ function CommentWrite(props) {
 
     const commentWrite = () => {
         if (is_token === false) {
-            window.alert("로그인 후 작성해주세요.")
+            window.alert("로그인 후 작성해주세요.");
+            history.push('login');
             return;
         }
         if (commentContent === "") {

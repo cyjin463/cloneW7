@@ -11,13 +11,13 @@ import { actionCreators as postActions } from '../redux/modules/post';
 function Main(props) {
     const dispatch = useDispatch();
     const post_list = useSelector(state => state.post.list)
-    console.log(post_list)
 
     React.useEffect(() => {
-        if (!post_list) {
-            console.log("post_list가 없습니다.")
-            dispatch(postActions.getLikePostWeekDB());
-        }
+        dispatch(postActions.getLikePostWeekDB());
+    }, [post_list.length])
+
+    React.useEffect(() => {
+        dispatch(postActions.detailPostDB(249));
     }, [])
 
     const trendingPost = () => {

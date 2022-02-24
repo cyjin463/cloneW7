@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Grid from '../elements/Geid';
 import { history } from '../redux/configureStore'
@@ -11,16 +11,19 @@ import CommentList from '../components/CommentList';
 import CommentWrite from '../components/CommentWrite';
 
 const PostDetail = (props) => {
-
     const dispatch = useDispatch()
+
+    const post_id = props.match.params.id
+    // console.log(post_id)
 
     const post_list = useSelector(state => state.post.list2)
     console.log('post_list', post_list)
 
     const user_info = useSelector(state => state.user.userInfo)
-    const comment_list = useSelector(state => state.comment.list)
+    // console.log(user_info)
+    const is_post_like = user_info.userLikes?.includes(Number(post_id))
 
-    const post_id = props.match.params.id
+    const comment_list = useSelector(state => state.comment.list)
 
     const login_user = user_info.username.split('@')[0]
 
@@ -28,13 +31,12 @@ const PostDetail = (props) => {
 
     const nickname = post_list.nickname
 
-    const [isLike, setIsLike] = React.useState(false);
-
+    React.useEffect(() => {
+        dispatch(postActions.detailPostDB(post_id))
+    }, []);
 
     React.useEffect(() => {
-        console.log("ehlsk")
-        dispatch(postActions.detailPostDB(post_id))
-        dispatch(commentActions.getComment(comment_list))
+        dispatch(commentActions.getCommentDB())
     }, [comment_list.length]);
 
     const deleteAction = () => {
@@ -43,12 +45,10 @@ const PostDetail = (props) => {
     }
 
     const handleLike = () => {
-        if (isLike) {
-            setIsLike(false)
-            dispatch(postActions.editDislikeDB(post_list.postingId, user_info.nickname));
+        if (is_post_like) {
+            dispatch(postActions.editDislikeDB(post_list.postingId, user_info.nickname, is_post_like))
         } else {
-            setIsLike(true)
-            dispatch(postActions.editLikeDB(post_list.postingId, user_info.nickname));
+            dispatch(postActions.editLikeDB(post_list.postingId, user_info.nickname, is_post_like));
         }
     }
 
@@ -60,48 +60,50 @@ const PostDetail = (props) => {
                         <div style={{ width: "760", height: "70", marginBottom: "32px" }}>
                             <h1 style={{ lineHeight: "1.5", fontWeight: "800", fontSize: "3rem", color: "#ececec" }}>{post_list.title}</h1>
                         </div>
-                        { writer === login_user ?
-                        <div style={{display: "flex",
-                                    WebkitBoxPack: "end",
-                                    justifyContent: "flex-end"}}>
-                                        <button style={{
-                                                padding: "0px",
-                                                outline: "none",
-                                                border: "none",
-                                                background: "none",
-                                                fontSize: "inherit",
-                                                cursor: "pointer",
-                                                color: "#acacac",
-                                        }}>통계</button>
+                        {writer === login_user ?
+                            <div style={{
+                                display: "flex",
+                                WebkitBoxPack: "end",
+                                justifyContent: "flex-end"
+                            }}>
+                                <button style={{
+                                    padding: "0px",
+                                    outline: "none",
+                                    border: "none",
+                                    background: "none",
+                                    fontSize: "inherit",
+                                    cursor: "pointer",
+                                    color: "#acacac",
+                                }}>통계</button>
 
-                                        <button style={{
-                                                padding: "0px",
-                                                outline: "none",
-                                                border: "none",
-                                                background: "none",
-                                                fontSize: "inherit",
-                                                cursor: "pointer",
-                                                color: "#acacac",
-                                                marginLeft: "0.5rem",
-                                                }}
-                                                onClick={() => {
-                                                    history.push(`/write/${post_id}`)
-                                                }}
-                                        >수정</button>
+                                <button style={{
+                                    padding: "0px",
+                                    outline: "none",
+                                    border: "none",
+                                    background: "none",
+                                    fontSize: "inherit",
+                                    cursor: "pointer",
+                                    color: "#acacac",
+                                    marginLeft: "0.5rem",
+                                }}
+                                    onClick={() => {
+                                        history.push(`/write/${post_id}`)
+                                    }}
+                                >수정</button>
 
-                                        <button style={{
-                                                padding: "0px",
-                                                outline: "none",
-                                                border: "none",
-                                                background: "none",
-                                                fontSize: "inherit",
-                                                cursor: "pointer",
-                                                color: "#acacac",
-                                                marginLeft: "0.5rem",
-                                                }}
-                                                onClick={deleteAction}
-                                        >삭제</button>
-                        </div> : null
+                                <button style={{
+                                    padding: "0px",
+                                    outline: "none",
+                                    border: "none",
+                                    background: "none",
+                                    fontSize: "inherit",
+                                    cursor: "pointer",
+                                    color: "#acacac",
+                                    marginLeft: "0.5rem",
+                                }}
+                                    onClick={deleteAction}
+                                >삭제</button>
+                            </div> : null
                         }
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                             <div style={{ fontSize: "1rem", color: "#ececec" }}>
@@ -110,11 +112,11 @@ const PostDetail = (props) => {
                                 <span>{post_list.dayBefore},{post_list.comentCnt}</span>
                             </div>
                             {
-                                isLike
+                                is_post_like
                                     ?
                                     <div
                                         style={{
-                                            width: "73px",
+                                            width: "0.75rem",
                                             height: "24px",
                                             display: "flex",
                                             alignItems: "center",
@@ -148,7 +150,7 @@ const PostDetail = (props) => {
                                     :
                                     <div
                                         style={{
-                                            width: "73px",
+                                            width: "0.75rem",
                                             height: "24px",
                                             display: "flex",
                                             alignItems: "center",
@@ -183,10 +185,10 @@ const PostDetail = (props) => {
 
                         </div>
                         <div style={{ width: "100%", marginTop: "15px" }}>
-                            {/* {post_list.tags.map((t, idx) => {
-                                console.log(t)
+                            {post_list.tags.map((t, idx) => {
+                                // console.log(t)
                                 return (
-                                    <a
+                                    <div as="a"
                                         key={idx}
                                         style={{
                                             backgroundColor: "#252525",
@@ -195,35 +197,53 @@ const PostDetail = (props) => {
                                             padding: "5px",
                                             fontWeight: "400",
                                             marginRight: "0.8rem",
+                                            display: "inline-block"
                                         }}
-                                        variant="primary">
+                                        variant="primary"
+                                        onClick={() => { history.push(`/posting/tags/${t}`) }}
+                                    >
                                         {t}
-                                    </a>
+                                    </div>
                                 )
-                            })} */}
+                            })}
                         </div>
-                        <div>
+                        <div style={{maxHeight: "100vh",
+                                    maxWidth: "100%",
+                                    width: "auto",
+                                    margin: "2rem auto 0px",
+                                    height: "auto",
+                                    objectFit: "contain",
+                                    display: "block"
+                                    }}>
                             <img src={post_list.thumnail} />
                         </div>
                     </div>
 
-                    <div style={{
-                        color: "#ECECEC", fontSize: "1.125rem", lineHeight: "1.7", letterSpacing: "-0.004em", overflowWrap: "break-word",
-                        workBreack: "keep-all"
-                    }}>
-                        <ReactMarkdown>
-                            {post_list.content}
-                        </ReactMarkdown>
+                    <div style={{width:"768px", margin:"5rem auto 0px"}}>
+                        <div style={{
+                            color: "#ECECEC", fontSize: "1.125rem", lineHeight: "1.7", letterSpacing: "-0.004em", overflowWrap: "break-word",
+                            workBreack: "keep-all"
+                        }}>
+                            <ReactMarkdown>
+                                {post_list.content}
+                            </ReactMarkdown>
+                        </div>
                     </div>
                     <div style={{ display: "flex", WebkitBoxAlign: "center", alignItems: "center" }}>
                         <div style={{ color: "WenkitLink", cursor: "pointer", textDecoration: "underline" }}>
                             <img src={post_list.profileImage}
                                 style={{
-                                    display: "block", width: "8rem", height: "8rem", borderRadius: "505", objectFit: "cover", boxShadow: "rgb(0 0 0 / 6%) 0px 0px 4px 0px"
+                                    display: "block", width: "8rem", height: "8rem", borderRadius: "50%", objectFit: "cover", boxShadow: "rgb(0 0 0 / 6%) 0px 0px 4px 0px"
                                 }} />
                         </div>
                         <div style={{ display: "flex", flexDirection: "column", WebkitBoxPack: "center", justifyContent: "center", marginLeft: "1rem" }}>
-
+                            <div style={{fontSize: "1.5rem",
+                                            lineHeight: "1.5",
+                                            fontWeight: "bold",
+                                            color: "#ececec"
+                                            }}>
+                                {post_list.nickname}
+                            </div>
                         </div>
                     </div>
                 </Grid>
