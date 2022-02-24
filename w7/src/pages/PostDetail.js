@@ -30,8 +30,10 @@ const PostDetail = (props) => {
     const post_list = useSelector(state => state.post.list)
     console.log('post_list', post_list)
 
-    const post_find = post_list.find(p => p.postingId == post_id)
-	console.log('post_find', post_find)
+    const post_list2 = useSelector(state => state.post.list2)
+
+    const post_find = post_list.find(p => p.postingId === Number(post_id))
+    console.log('post_find', post_find)
 
     const user_info = useSelector(state => state.user.userInfo)
     // console.log(user_info)
@@ -40,7 +42,6 @@ const PostDetail = (props) => {
     const login_user = user_info.username.split('@')[0]
 
     const writer = post_find.nickname
-    console.log(writer)
 
     const nickname = post_list.nickname
 
@@ -230,30 +231,32 @@ const PostDetail = (props) => {
                             display: "block"
                         }}>
                             <img style={{ maxHeight: "100vh", maxWidth: "100%", width: "auto", margin: "2rem auto 0px", height: "auto", objectFit: "contain", display: "block" }} src={post_list.thumnail} />                        </div>
-                        <div style={{maxHeight: "100vh",
-                                    maxWidth: "100%",
-                                    width: "auto",
-                                    margin: "2rem auto 0px",
-                                    height: "auto",
-                                    objectFit: "contain",
-                                    display: "block"
-                                    }}>
-                            <img style={{maxHeight: "100vh",
-                                        maxWidth: "100%",
-                                        width: "auto",
-                                        margin: "2rem auto 0px",
-                                        height: "auto",
-                                        objectFit: "contain",
-                                        display: "block"
-                                    }}
-                                        src={post_find.thumnail} />
+                        <div style={{
+                            maxHeight: "100vh",
+                            maxWidth: "100%",
+                            width: "auto",
+                            margin: "2rem auto 0px",
+                            height: "auto",
+                            objectFit: "contain",
+                            display: "block"
+                        }}>
+                            <img style={{
+                                maxHeight: "100vh",
+                                maxWidth: "100%",
+                                width: "auto",
+                                margin: "2rem auto 0px",
+                                height: "auto",
+                                objectFit: "contain",
+                                display: "block"
+                            }}
+                                src={post_find.thumnail} />
                         </div>
                     </div>
 
                     <div style={{ width: "768px", margin: "5rem auto 0px" }}>
                         <div style={{
                             color: "#ECECEC", fontSize: "1.125rem", lineHeight: "1.7", letterSpacing: "-0.004em", overflowWrap: "break-word",
-                            workBreack: "keep-all", maxWidth: "100%" , width: "auto", objectFit: "cover", display: "block",
+                            workBreack: "keep-all", maxWidth: "100%", width: "auto", objectFit: "cover", display: "block",
                             margin: "3rem auto"
                         }}>
                             <ReactMarkdown>
@@ -277,7 +280,7 @@ const PostDetail = (props) => {
                                 fontWeight: "bold",
                                 color: "#ececec"
                             }}>
-                                {post_find.nickname}
+                                {post_list2.nickname}
                             </div>
                         </div>
                     </div>
@@ -290,12 +293,12 @@ const PostDetail = (props) => {
                     fontWeight: "600",
                     marginBottom: "1rem"
                 }}>
-                    {post_find.commentCnt}개의 댓글
+                    {post_list2.commentCnt}개의 댓글
                 </h4>
                 <div style={{ color: "#ECECEC" }}>
                     <CommentWrite postId={post_id} />
                     {post_find &&
-                        <CommentList postId={post_id} post_list={post_find} />
+                        <CommentList postId={post_id} post_list={post_list2} />
                     }
 
                 </div>
