@@ -9,6 +9,7 @@ import apis from '../../common/api';
 const initialState = {
     list: [],
     list2: [],
+    list3: [],
     tag_list: [],
 };
 
@@ -32,7 +33,7 @@ const detailPost = createAction(DETAIL_POST, (post_list2) => ({ post_list2 }));
 const editLike = createAction(EDIT_LIKE, (postingId, nickname, is_post_like, _like) => ({ postingId, nickname, is_post_like, _like }));
 const editDislike = createAction(EDIT_DISLIKE, (postingId, nickname, is_post_like, _like) => ({ postingId, nickname, is_post_like, _like }));
 const deletePost = createAction(DELETE_POST, (postingId) => ({ postingId }));
-const myPost = createAction(MY_POST, (post) => ({ post }));
+const myPost = createAction(MY_POST, (post_list3) => ({ post_list3 }));
 const editPost = createAction(EDIT_POST, (contents) => ({ contents }));
 const searchTag = createAction(SEARCH_TAG, (tag_list) => ({ tag_list }));
 
@@ -182,11 +183,17 @@ const editDislikeDB = (postingId, nickname, is_post_like) => {
 
 const myPostDB = (nickname) => {
     return function (dispatch, getState, { history }) {
+        const token = sessionStorage.getItem('token');
         console.log(nickname)
-        axios
-            .get(`http://yuseon.shop/api/mypage/${nickname}`)
+        apis
+            .get(`http://yuseon.shop/api/mypage/${nickname}`,
+            {
+                headers: {
+                    "Authorization": `${token}`
+                }
+            })
             .then((res) => {
-                console.log(res)
+                console.log(res.data)
                 dispatch(myPost(res.data))
             }).catch((err) => {
                 console.log(err)
@@ -260,7 +267,10 @@ export default handleActions(
         }),
         [SEARCH_TAG]: (state, action) => produce(state, (draft) => {
             draft.tag_list = action.payload.tag_list;
-        })
+        }),
+        [MY_POST]: (state, action) => produce(state, (draft) => {
+            draft.list3 = action.payload.post_list3;
+        }),
     },
     initialState
 );

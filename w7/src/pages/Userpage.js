@@ -8,21 +8,16 @@ const Mypage = () => {
 
     const dispatch = useDispatch()
 
-    const user_info = useSelector(state => state.user.userInfo)
-    console.log(user_info)
-
-    const nickname = user_info.nickname
-    console.log(nickname)
+    const writer = useSelector( state => state.post.list2.nickname)
 
     const post_list = useSelector( state => state.post.list3)
- 
+
 
     React.useEffect(() => {
             console.log("Mypag보내기")
-            dispatch(postActions.myPostDB(nickname))
+            dispatch(postActions.myPostDB(writer))
         }, []);
-
-    
+        
     return (
         <div style={{width: "768px",
                     marginLeft: "auto",
@@ -46,7 +41,7 @@ const Mypage = () => {
                                     objectFit: "cover",
                                     boxShadow: "rgb(0 0 0 / 6%) 0px 0px 4px 0px",
                                     }} 
-                            src={user_info.imgUrl} /> 
+                            src={writer.imgUrl} /> 
                     </div>
                     <div style={{display: "flex",
                                 flexDirection: "column",
@@ -59,7 +54,7 @@ const Mypage = () => {
                                     fontWeight: "bold",
                                     color:"#ececec",
                                     }}>
-                            {user_info.nickname}
+                            {writer}
                         </div>                
                     </div>
                 </div>

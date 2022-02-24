@@ -92,7 +92,7 @@ import { idCheck } from '../shared/common';
                                         wordBreak: "keep-all",
                                         cursor: "pointer",
                                         }}
-                                        variant="primary" onClick={login}>회원가입</Button>{' '}
+                                        variant="primary" onClick={() => {history.push('/signup')}}>회원가입</Button>{' '}
                         </div>
                         </Form>
                     </Grid>

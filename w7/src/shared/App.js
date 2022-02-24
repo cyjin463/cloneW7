@@ -13,6 +13,7 @@ import MainRecent from '../pages/MainRecent';
 import PostAdd from '../pages/PostAdd';
 import Mypage from "../pages/Mypage";
 import SearchTagPage from '../pages/SearchTagPage';
+import Userpage from "../pages/Userpage";
 
 function App() {
   return (
@@ -20,13 +21,14 @@ function App() {
       <Header />
       <ConnectedRouter history={history}>
         <Route path="/login" exact component={Login} />
-        <Route path="/user/signup" exact component={Signup} />
+        <Route path="/signup" exact component={Signup} />
         <Route path="/post/:id" exact component={PostDetail} />
         <Route path="/" exact component={Main} />
         <Route path="/recent" exact component={MainRecent} />
         <Route path="/write" exact component={PostAdd} />
         <Route path="/write/:id" exact component={PostAdd} />
         <Route path="/My/:nickname" exact component={Mypage} />
+        <Route path="/user/:nickname" exact component={Userpage} />
         <Route path="/posting/tags/:tag" exact component={SearchTagPage} />
       </ConnectedRouter>
     </div>
