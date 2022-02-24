@@ -11,12 +11,15 @@ import { actionCreators as postActions } from '../redux/modules/post';
 function Main(props) {
     const dispatch = useDispatch();
     const post_list = useSelector(state => state.post.list)
-    console.log(post_list)
 
     const [toggleName, setToggleName] = React.useState("이번 주");
 
     React.useEffect(() => {
         dispatch(postActions.getLikePostWeekDB());
+    }, [post_list.length])
+
+    React.useEffect(() => {
+        dispatch(postActions.detailPostDB(249));
     }, [])
 
     // React.useEffect(() => {

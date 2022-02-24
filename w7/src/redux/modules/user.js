@@ -116,6 +116,7 @@ const loginCheckM = () => {
 
 const loginM = (username, password) => {
     return function (dispatch, getState, { history }) {
+        console.log("되나?")
         axios
             /* .post('http://yuseon.shop/user/login',{ */
             .post('http://yuseon.shop/user/login', {
@@ -152,6 +153,7 @@ const loginM = (username, password) => {
                         console.log("로그인 확인 실패", err)
                     })
                 history.replace('/')
+                window.location.reload()
             })
             .catch((err) => {
                 window.alert("이메일이나 패스워드를 다시 확인해주세요!")

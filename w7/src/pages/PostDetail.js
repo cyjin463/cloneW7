@@ -25,6 +25,7 @@ const PostDetail = (props) => {
 
     const comment_list = post_list.commentList;
     console.log(comment_list)
+    const comment_list = useSelector(state => state.comment.list)
 
     const login_user = user_info.username.split('@')[0]
 
@@ -35,6 +36,10 @@ const PostDetail = (props) => {
     useEffect(() => {
         dispatch(postActions.detailPostDB(post_id))
     }, [dispatch]);
+
+    React.useEffect(() => {
+        dispatch(commentActions.getCommentDB())
+    }, [comment_list.length]);
 
     const deleteAction = () => {
         console.log("postList화면에서", post_id, nickname, "의 삭제버튼을 눌렀어요.");
@@ -114,7 +119,7 @@ const PostDetail = (props) => {
                                     ?
                                     <div
                                         style={{
-                                            width: "73px",
+                                            width: "0.75rem",
                                             height: "24px",
                                             display: "flex",
                                             alignItems: "center",
@@ -148,7 +153,7 @@ const PostDetail = (props) => {
                                     :
                                     <div
                                         style={{
-                                            width: "73px",
+                                            width: "0.75rem",
                                             height: "24px",
                                             display: "flex",
                                             alignItems: "center",
@@ -205,18 +210,27 @@ const PostDetail = (props) => {
                                 )
                             })}
                         </div>
-                        <div>
+                        <div style={{maxHeight: "100vh",
+                                    maxWidth: "100%",
+                                    width: "auto",
+                                    margin: "2rem auto 0px",
+                                    height: "auto",
+                                    objectFit: "contain",
+                                    display: "block"
+                                    }}>
                             <img src={post_list.thumnail} />
                         </div>
                     </div>
 
-                    <div style={{
-                        color: "#ECECEC", fontSize: "1.125rem", lineHeight: "1.7", letterSpacing: "-0.004em", overflowWrap: "break-word",
-                        workBreack: "keep-all"
-                    }}>
-                        <ReactMarkdown>
-                            {post_list.content}
-                        </ReactMarkdown>
+                    <div style={{width:"768px", margin:"5rem auto 0px"}}>
+                        <div style={{
+                            color: "#ECECEC", fontSize: "1.125rem", lineHeight: "1.7", letterSpacing: "-0.004em", overflowWrap: "break-word",
+                            workBreack: "keep-all"
+                        }}>
+                            <ReactMarkdown>
+                                {post_list.content}
+                            </ReactMarkdown>
+                        </div>
                     </div>
                     <div style={{ display: "flex", WebkitBoxAlign: "center", alignItems: "center" }}>
                         <div style={{ color: "WenkitLink", cursor: "pointer", textDecoration: "underline" }}>
@@ -226,7 +240,13 @@ const PostDetail = (props) => {
                                 }} />
                         </div>
                         <div style={{ display: "flex", flexDirection: "column", WebkitBoxPack: "center", justifyContent: "center", marginLeft: "1rem" }}>
-
+                            <div style={{fontSize: "1.5rem",
+                                            lineHeight: "1.5",
+                                            fontWeight: "bold",
+                                            color: "#ececec"
+                                            }}>
+                                {post_list.nickname}
+                            </div>
                         </div>
                     </div>
                 </Grid>
