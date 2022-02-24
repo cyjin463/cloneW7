@@ -27,8 +27,6 @@ const Header = (props) => {
 	const X = () => {
 		setview(!view)
 	}
-
-
 	return (
 		<>
 			<div style={{ height: "4rem", margin:"0px 31px 0px 31px" }}>
@@ -79,9 +77,6 @@ const Header = (props) => {
 								</svg>
 							</div>
 						</div>
-
-
-
 							
 										<div style={{
 											display: "flex",
@@ -247,7 +242,7 @@ const Header = (props) => {
 															fontWeight: "500",
 															cursor: "pointer",
 															}}
-															onClick={() => { history.push(`/My/${user_info.nickname}`) }}>
+															onClick={() => { history.push(`/My/${user_info.nickname}`); setview(!view) }}>
 														내 벨로그
 													</div>
 												</div> 

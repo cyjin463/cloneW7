@@ -12,6 +12,8 @@ function Main(props) {
     const dispatch = useDispatch();
     const post_list = useSelector(state => state.post.list)
 
+    const [toggleName, setToggleName] = React.useState("이번 주");
+
     React.useEffect(() => {
         dispatch(postActions.getLikePostWeekDB());
     }, [post_list.length])
@@ -20,19 +22,26 @@ function Main(props) {
         dispatch(postActions.detailPostDB(249));
     }, [])
 
+    // React.useEffect(() => {
+    //     dispatch(postActions.detailPostDB());
+    // }, [])
+
     const trendingPost = () => {
         dispatch(postActions.getLikePostWeekDB());
     }
 
     const onClickTodayPost = () => {
+        setToggleName("오늘")
         dispatch(postActions.getLikePostTodayDB());
     }
 
     const onClickWeekPost = () => {
+        setToggleName("이번 주")
         dispatch(postActions.getLikePostWeekDB());
     }
 
     const onClickMonthPost = () => {
+        setToggleName("이번 달")
         dispatch(postActions.getLikePostMonthDB());
     }
 
@@ -102,17 +111,17 @@ function Main(props) {
                         <div style={{ width: "50%", height: "2px", position: "absolute", bottom: "0px", backgroundColor: "#E0E0E0" }}></div>
                         <Dropdown>
                             <Dropdown.Toggle id="dropdown-button-dark-example1" variant="secondary">
-                                이번 주
+                                {toggleName}
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu variant="dark">
-                                <Dropdown.Item href="#/action-1" onClick={onClickTodayPost}>
+                                <Dropdown.Item onClick={onClickTodayPost}>
                                     오늘
                                 </Dropdown.Item>
-                                <Dropdown.Item active onClick={onClickWeekPost}>이번 주</Dropdown.Item>
+                                <Dropdown.Item onClick={onClickWeekPost}>이번 주</Dropdown.Item>
                                 <Dropdown.Item onClick={onClickMonthPost}>이번 달</Dropdown.Item>
                                 {/* <Dropdown.Divider />
-                                    <Dropdown.Item href="#/action-4">Separated link</Dropdown.Item> */}
+                                <Dropdown.Item href="#/action-4">Separated link</Dropdown.Item> */}
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>

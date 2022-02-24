@@ -23,7 +23,8 @@ const PostDetail = (props) => {
     // console.log(user_info)
     const is_post_like = user_info.userLikes?.includes(Number(post_id))
 
-    const comment_list = useSelector(state => state.comment.list)
+    const comment_list = post_list.commentList;
+    console.log(comment_list)
 
     const login_user = user_info.username.split('@')[0]
 
@@ -36,8 +37,9 @@ const PostDetail = (props) => {
     }, []);
 
     React.useEffect(() => {
-        dispatch(commentActions.getCommentDB())
-    }, [comment_list.length]);
+        console.log(nickname,"Mypag보내기")
+        dispatch(postActions.myPostDB(nickname))
+    }, []);
 
     const deleteAction = () => {
         console.log("postList화면에서", post_id, nickname, "의 삭제버튼을 눌렀어요.");
@@ -51,6 +53,7 @@ const PostDetail = (props) => {
             dispatch(postActions.editLikeDB(post_list.postingId, user_info.nickname, is_post_like));
         }
     }
+
 
     return (
         <>
@@ -109,7 +112,7 @@ const PostDetail = (props) => {
                             <div style={{ fontSize: "1rem", color: "#ececec" }}>
                                 <span style={{ fontWeight: "400" }}><a>{post_list.nickname}</a></span>
                                 <span> . </span>
-                                <span>{post_list.dayBefore},{post_list.comentCnt}</span>
+                                <span>{post_list.dayBefore}</span>
                             </div>
                             {
                                 is_post_like
@@ -191,6 +194,8 @@ const PostDetail = (props) => {
                                     <div as="a"
                                         key={idx}
                                         style={{
+                                            minWidth: "4rem",
+                                            textAlign: "center",
                                             backgroundColor: "#252525",
                                             color: "#96f2d7",
                                             borderRadius: "5rem",
@@ -215,14 +220,23 @@ const PostDetail = (props) => {
                                     objectFit: "contain",
                                     display: "block"
                                     }}>
-                            <img src={post_list.thumnail} />
+                            <img style={{maxHeight: "100vh",
+                                        maxWidth: "100%",
+                                        width: "auto",
+                                        margin: "2rem auto 0px",
+                                        height: "auto",
+                                        objectFit: "contain",
+                                        display: "block"
+                                    }}
+                                        src={post_list.thumnail} />
                         </div>
                     </div>
 
                     <div style={{width:"768px", margin:"5rem auto 0px"}}>
                         <div style={{
                             color: "#ECECEC", fontSize: "1.125rem", lineHeight: "1.7", letterSpacing: "-0.004em", overflowWrap: "break-word",
-                            workBreack: "keep-all"
+                            workBreack: "keep-all", maxWidth: "100%" , width: "auto", objectFit: "cover", display: "block",
+                            margin: "3rem auto"
                         }}>
                             <ReactMarkdown>
                                 {post_list.content}
@@ -230,7 +244,9 @@ const PostDetail = (props) => {
                         </div>
                     </div>
                     <div style={{ display: "flex", WebkitBoxAlign: "center", alignItems: "center" }}>
-                        <div style={{ color: "WenkitLink", cursor: "pointer", textDecoration: "underline" }}>
+                        <div style={{ color: "WenkitLink", cursor: "pointer", textDecoration: "underline" }}
+                            onClick={() => { history.push(`/user/${nickname}`) }}
+                        >
                             <img src={post_list.profileImage}
                                 style={{
                                     display: "block", width: "8rem", height: "8rem", borderRadius: "50%", objectFit: "cover", boxShadow: "rgb(0 0 0 / 6%) 0px 0px 4px 0px"
